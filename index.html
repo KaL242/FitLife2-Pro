@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IRON FIT - Programme Musculation & Nutrition</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -319,7 +320,7 @@
                     <div class="text-6xl mb-4">📊</div>
                     <h3 class="font-bebas text-3xl mb-4">PROGRAMME ALIMENTAIRE</h3>
                     <p class="text-gray-400 mb-6">Plan de repas complet sur 5 jours (Lundi-Vendredi) avec macros et shopping list détaillée</p>
-                    <button onclick="downloadPDF('nutrition')" class="btn-gym px-8 py-3 font-bold text-white w-full">
+                    <button onclick="generatePDF('nutrition')" class="btn-gym px-8 py-3 font-bold text-white w-full">
                         TÉLÉCHARGER PDF
                     </button>
                 </div>
@@ -328,7 +329,7 @@
                     <div class="text-6xl mb-4">💪</div>
                     <h3 class="font-bebas text-3xl mb-4">PROGRAMME MUSCULATION</h3>
                     <p class="text-gray-400 mb-6">Split Push/Pull/Legs sur 5 jours avec progression et techniques avancées</p>
-                    <button onclick="downloadPDF('workout')" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 font-bold text-white w-full transition rounded">
+                    <button onclick="generatePDF('workout')" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 font-bold text-white w-full transition rounded">
                         TÉLÉCHARGER PDF
                     </button>
                 </div>
@@ -352,7 +353,7 @@
     </footer>
 
     <script>
-        // Base de données des exercices avec vidéos YouTube FR vérifiées
+        // Base de données des exercices avec vidéos YouTube FR vérifiées et fonctionnelles
         const exercisesDB = {
             pectoraux: [
                 { name: "Développé Couché", video: "4HvI_hCErGA", sets: "4x8-12", difficulty: "Intermédiaire" },
@@ -925,13 +926,11 @@
             let selectedExercises = [];
             
             if (muscle === 'all') {
-                // Full body : 1 exo par groupe
                 Object.keys(exercisesDB).forEach(group => {
                     const random = exercisesDB[group][Math.floor(Math.random() * exercisesDB[group].length)];
                     selectedExercises.push({...random, group});
                 });
             } else {
-                // 4-5 exos du groupe sélectionné
                 const groupExercises = exercisesDB[muscle];
                 const shuffled = [...groupExercises].sort(() => 0.5 - Math.random());
                 selectedExercises = shuffled.slice(0, 5).map(e => ({...e, group: muscle}));
@@ -968,7 +967,6 @@
             const totalKcal = petitDej.kcal + collation.kcal + dejeuner.kcal + diner.kcal;
             const totalProt = petitDej.prot + collation.prot + dejeuner.prot + diner.prot;
             
-            // Formater les ingrédients avec grammages
             const formatIngredients = (ingredients) => {
                 return ingredients.map(ing => `<span class="block text-xs text-gray-400">• ${ing.name}: <span class="text-white">${ing.qty}</span></span>`).join('');
             };
@@ -1099,386 +1097,501 @@
             renderRecipes(cat);
         }
 
-        // Téléchargement PDF stylisé
-        function downloadPDF(type) {
+        // Génération PDF stylisé avec jsPDF
+        function generatePDF(type) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Couleurs du thème Iron Fit
+            const noir = [10, 10, 10];
+            const rouge = [220, 20, 60];
+            const gris = [50, 50, 50];
+            const blanc = [255, 255, 255];
+            const vert = [34, 197, 94];
+            const bleu = [59, 130, 246];
+            
+            // Fond noir
+            doc.setFillColor(...noir);
+            doc.rect(0, 0, 210, 297, 'F');
+            
+            // Header avec bande rouge
+            doc.setFillColor(...rouge);
+            doc.rect(0, 0, 210, 25, 'F');
+            
+            // Titre
+            doc.setTextColor(...blanc);
+            doc.setFontSize(24);
+            doc.setFont("helvetica", "bold");
+            doc.text("IRON FIT", 105, 17, { align: "center" });
+            
+            // Sous-titre
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text("PROGRAMME 100% GRATUIT - BY KAL", 105, 22, { align: "center" });
+            
+            let yPos = 35;
+            
             if (type === 'nutrition') {
-                const content = `
-╔════════════════════════════════════════════════════════════════╗
-║           PROGRAMME ALIMENTAIRE IRON FIT - 5 JOURS            ║
-║                      100% GRATUIT - BY KAL                     ║
-╚════════════════════════════════════════════════════════════════╝
-
-LUNDI - 1650 kcal | 140g protéines
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 PETIT-DÉJ: Omelette 3 Oeufs Avocat (450 kcal)
-   • Oeufs entiers: 3 (150g)
-   • Avocat: 1/2 (75g)
-   • Épinards frais: 30g
-   • Huile d'olive: 5ml
-
-🍎 COLLATION: Shake Protéiné (200 kcal)
-   • Whey protéine: 30g (1 scoop)
-   • Banane: 1 moyenne (120g)
-   • Flocons d'avoine: 40g
-   • Lait écrémé: 250ml
-
-🌞 DÉJEUNER: Poulet Riz Brocolis (550 kcal)
-   • Blanc de poulet: 150g
-   • Riz complet cuit: 150g
-   • Brocolis: 200g
-   • Sauce soja légère: 15ml
-
-🌙 DÎNER: Saumon Asperges (450 kcal)
-   • Pavé de saumon: 150g
-   • Asperges vertes: 200g
-   • Citron: 1/2
-   • Huile d'olive: 10ml
-
-MARDI - 1510 kcal | 125g protéines
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 PETIT-DÉJ: Smoothie Protéiné Banane (320 kcal)
-   • Whey vanille: 30g
-   • Banane: 1 (120g)
-   • Flocons d'avoine: 40g
-   • Lait: 250ml
-
-🍎 COLLATION: Yaourt Grec Noix (250 kcal)
-   • Yaourt grec 0%: 150g
-   • Noix de cajou: 15g
-   • Miel: 10g
-
-🌞 DÉJEUNER: Bowl Quinoa Saumon (520 kcal)
-   • Quinoa cuit: 150g
-   • Saumon frais: 120g
-   • Avocat: 1/2 (75g)
-   • Légumes: 150g
-
-🌙 DÎNER: Poulet Légumes Rôtis (420 kcal)
-   • Cuisse de poulet sans peau: 150g
-   • Courgettes: 150g
-   • Poivrons: 100g
-   • Oignons: 80g
-
-MERCREDI - 1620 kcal | 130g protéines
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 PETIT-DÉJ: Porridge Protéiné Fruits (380 kcal)
-   • Flocons d'avoine: 60g
-   • Whey vanille: 20g
-   • Fruits rouges: 80g
-   • Amandes: 10g
-   • Lait d'amande: 200ml
-
-🍎 COLLATION: Pomme Beurre Cacahuète (280 kcal)
-   • Pomme: 1 moyenne (180g)
-   • Beurre cacahuète: 20g
-
-🌞 DÉJEUNER: Pâtes Poulet Pesto (580 kcal)
-   • Pâtes complètes cuites: 200g
-   • Blanc de poulet: 150g
-   • Pesto maison: 30g
-   • Tomates cerises: 100g
-
-🌙 DÎNER: Omelette Jambon Fromage (380 kcal)
-   • Oeufs entiers: 3 (150g)
-   • Jambon blanc: 60g
-   • Fromage râpé: 30g
-   • Champignons: 100g
-
-JEUDI - 1470 kcal | 135g protéines
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 PETIT-DÉJ: Toast Saumon Avocat (420 kcal)
-   • Pain complet: 2 tranches (60g)
-   • Saumon fumé: 60g
-   • Avocat: 1/2 (75g)
-   • Oeuf poché: 1 (50g)
-
-🍎 COLLATION: Fromage Blanc Fruits (220 kcal)
-   • Fromage blanc 0%: 200g
-   • Fruits rouges: 100g
-   • Miel: 10g
-
-🌞 DÉJEUNER: Salade César Poulet (480 kcal)
-   • Salade romaine: 150g
-   • Blanc de poulet: 150g
-   • Croutons: 30g
-   • Parmesan: 20g
-   • Sauce César légère: 30ml
-
-🌙 DÎNER: Dinde Haricots Verts (350 kcal)
-   • Escalope de dinde: 200g
-   • Haricots verts: 200g
-   • Ail: 2 gousses
-   • Huile d'olive: 10ml
-
-VENDREDI - 1440 kcal | 120g protéines
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🌅 PETIT-DÉJ: Pancakes Protéinés (350 kcal)
-   • Farine d'avoine: 50g
-   • Whey: 20g
-   • Blancs d'oeufs: 2 (70g)
-   • Banane mûre: 1 (100g)
-
-🍎 COLLATION: Barre Protéinée Maison (240 kcal)
-   • Flocons d'avoine: 40g
-   • Whey: 20g
-   • Miel: 15g
-   • Chocolat noir 70%: 10g
-
-🌞 DÉJEUNER: Wrap Thon Avocat (450 kcal)
-   • Tortilla complète: 1 (60g)
-   • Thon au naturel: 120g
-   • Avocat: 1/2 (75g)
-   • Salade: 30g
-   • Tomate: 50g
-
-🌙 DÎNER: Cabillaud Purée (400 kcal)
-   • Dos de cabillaud: 180g
-   • Pommes de terre: 250g
-   • Lait écrémé: 50ml
-   • Beurre: 10g
-
-╔════════════════════════════════════════════════════════════════╗
-║                      SHOPPING LIST                             ║
-╚════════════════════════════════════════════════════════════════╝
-
-PROTEINES:
-□ Oeufs entiers: 30
-□ Blanc de poulet: 1.2kg
-□ Saumon frais/fumé: 800g
-□ Thon au naturel: 2 boîtes
-□ Dinde: 400g
-□ Cabillaud: 200g
-
-GLUCIDES:
-□ Riz complet: 1kg
-□ Quinoa: 500g
-□ Pâtes complètes: 500g
-□ Flocons d'avoine: 500g
-□ Pain complet: 1 pain
-□ Tortillas complètes: 1 paquet
-□ Pommes de terre: 2kg
-□ Patates douces: 500g
-
-LEGUMES & FRUITS:
-□ Brocolis: 1kg
-□ Épinards: 500g
-□ Haricots verts: 1kg
-□ Courgettes: 1.5kg
-□ Poivrons: 1kg
-□ Tomates: 1kg
-□ Oignons: 500g
-□ Ail: 1 tête
-□ Bananes: 10
-□ Pommes: 5
-│ Avocats: 10
-□ Fruits rouges: 1kg (surgelés)
-
-AUTRES:
-□ Whey protéine: 1 pot
-□ Lait écrémé: 3L
-□ Lait d'amande: 1L
-□ Yaourt grec 0%: 1kg
-□ Fromage blanc 0%: 500g
-□ Fromage râpé: 200g
-□ Beurre: 100g
-□ Huile d'olive: 1 bouteille
-□ Huile de sésame: 1 bouteille
-□ Miel: 1 pot
-□ Beurre de cacahuète: 1 pot
-□ Sauce soja légère: 1 bouteille
-□ Amandes: 200g
-□ Noix de cajou: 100g
-
-CONSEILS IRON FIT:
-• Préparez vos repas à l'avance (meal prep dimanche)
-• Buvez 3L d'eau minimum par jour
-• Dormez 7-8h par nuit pour la récupération
-• Respectez les temps de repos entre les séries
-• Augmentez les charges progressivement
-
-═══════════════════════════════════════════════════════════════════
-© 2026 Iron Fit By Kal - NO PAIN NO GAIN
-═══════════════════════════════════════════════════════════════════
-                `;
+                // Titre programme nutrition
+                doc.setTextColor(...rouge);
+                doc.setFontSize(18);
+                doc.setFont("helvetica", "bold");
+                doc.text("PROGRAMME ALIMENTAIRE - 5 JOURS", 105, yPos, { align: "center" });
+                yPos += 10;
                 
-                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Programme_Nutrition_IronFit_By_Kal.txt';
-                a.click();
+                // Lundi
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("LUNDI - 1650 kcal | 140g prot", 15, yPos);
+                yPos += 10;
+                
+                const lundi = [
+                    ["PETIT-DÉJ:", "Omelette 3 Oeufs Avocat (450 kcal)"],
+                    ["", "• Oeufs entiers: 3 (150g)"],
+                    ["", "• Avocat: 1/2 (75g)"],
+                    ["", "• Épinards frais: 30g"],
+                    ["COLLATION:", "Shake Protéiné (200 kcal)"],
+                    ["", "• Whey: 30g | Banane: 120g | Flocons: 40g"],
+                    ["DÉJEUNER:", "Poulet Riz Brocolis (550 kcal)"],
+                    ["", "• Poulet: 150g | Riz: 150g | Brocolis: 200g"],
+                    ["DÎNER:", "Saumon Asperges (450 kcal)"],
+                    ["", "• Saumon: 150g | Asperges: 200g"]
+                ];
+                
+                doc.setFontSize(10);
+                lundi.forEach(([label, value]) => {
+                    if (label) {
+                        doc.setTextColor(...vert);
+                        doc.setFont("helvetica", "bold");
+                        doc.text(label, 15, yPos);
+                    }
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(value, label ? 45 : 20, yPos);
+                    yPos += 5;
+                });
+                
+                yPos += 5;
+                
+                // Mardi
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("MARDI - 1510 kcal | 125g prot", 15, yPos);
+                yPos += 10;
+                
+                const mardi = [
+                    ["PETIT-DÉJ:", "Smoothie Protéiné (320 kcal)"],
+                    ["", "• Whey: 30g | Banane: 120g | Lait: 250ml"],
+                    ["COLLATION:", "Yaourt Grec Noix (250 kcal)"],
+                    ["", "• Yaourt 0%: 150g | Noix: 15g"],
+                    ["DÉJEUNER:", "Bowl Quinoa Saumon (520 kcal)"],
+                    ["", "• Quinoa: 150g | Saumon: 120g | Avocat: 75g"],
+                    ["DÎNER:", "Poulet Légumes Rôtis (420 kcal)"],
+                    ["", "• Poulet: 150g | Légumes: 250g"]
+                ];
+                
+                doc.setFontSize(10);
+                mardi.forEach(([label, value]) => {
+                    if (label) {
+                        doc.setTextColor(...vert);
+                        doc.setFont("helvetica", "bold");
+                        doc.text(label, 15, yPos);
+                    }
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(value, label ? 45 : 20, yPos);
+                    yPos += 5;
+                });
+                
+                // Suite des jours...
+                yPos += 5;
+                
+                // Mercredi
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("MERCREDI - 1620 kcal | 130g prot", 15, yPos);
+                yPos += 10;
+                
+                const mercredi = [
+                    ["PETIT-DÉJ:", "Porridge Protéiné (380 kcal)"],
+                    ["", "• Avoine: 60g | Whey: 20g | Fruits: 80g"],
+                    ["COLLATION:", "Pomme Beurre Cacahuète (280 kcal)"],
+                    ["", "• Pomme: 180g | Beurre cacahuète: 20g"],
+                    ["DÉJEUNER:", "Pâtes Poulet Pesto (580 kcal)"],
+                    ["", "• Pâtes: 200g | Poulet: 150g | Pesto: 30g"],
+                    ["DÎNER:", "Omelette Jambon Fromage (380 kcal)"],
+                    ["", "• Oeufs: 3 | Jambon: 60g | Fromage: 30g"]
+                ];
+                
+                doc.setFontSize(10);
+                mercredi.forEach(([label, value]) => {
+                    if (label) {
+                        doc.setTextColor(...vert);
+                        doc.setFont("helvetica", "bold");
+                        doc.text(label, 15, yPos);
+                    }
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(value, label ? 45 : 20, yPos);
+                    yPos += 5;
+                });
+                
+                // Nouvelle page pour Jeudi-Vendredi + Shopping List
+                doc.addPage();
+                doc.setFillColor(...noir);
+                doc.rect(0, 0, 210, 297, 'F');
+                
+                yPos = 20;
+                
+                // Jeudi
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("JEUDI - 1470 kcal | 135g prot", 15, yPos);
+                yPos += 10;
+                
+                const jeudi = [
+                    ["PETIT-DÉJ:", "Toast Saumon Avocat (420 kcal)"],
+                    ["", "• Pain: 60g | Saumon: 60g | Avocat: 75g"],
+                    ["COLLATION:", "Fromage Blanc Fruits (220 kcal)"],
+                    ["", "• Fromage blanc: 200g | Fruits: 100g"],
+                    ["DÉJEUNER:", "Salade César Poulet (480 kcal)"],
+                    ["", "• Poulet: 150g | Salade: 150g | Parmesan: 20g"],
+                    ["DÎNER:", "Dinde Haricots Verts (350 kcal)"],
+                    ["", "• Dinde: 200g | Haricots: 200g"]
+                ];
+                
+                doc.setFontSize(10);
+                jeudi.forEach(([label, value]) => {
+                    if (label) {
+                        doc.setTextColor(...vert);
+                        doc.setFont("helvetica", "bold");
+                        doc.text(label, 15, yPos);
+                    }
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(value, label ? 45 : 20, yPos);
+                    yPos += 5;
+                });
+                
+                yPos += 5;
+                
+                // Vendredi
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("VENDREDI - 1440 kcal | 120g prot", 15, yPos);
+                yPos += 10;
+                
+                const vendredi = [
+                    ["PETIT-DÉJ:", "Pancakes Protéinés (350 kcal)"],
+                    ["", "• Avoine: 50g | Whey: 20g | Banane: 100g"],
+                    ["COLLATION:", "Barre Protéinée (240 kcal)"],
+                    ["", "• Avoine: 40g | Whey: 20g | Miel: 15g"],
+                    ["DÉJEUNER:", "Wrap Thon Avocat (450 kcal)"],
+                    ["", "• Tortilla: 60g | Thon: 120g | Avocat: 75g"],
+                    ["DÎNER:", "Cabillaud Purée (400 kcal)"],
+                    ["", "• Cabillaud: 180g | Pommes de terre: 250g"]
+                ];
+                
+                doc.setFontSize(10);
+                vendredi.forEach(([label, value]) => {
+                    if (label) {
+                        doc.setTextColor(...vert);
+                        doc.setFont("helvetica", "bold");
+                        doc.text(label, 15, yPos);
+                    }
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(value, label ? 45 : 20, yPos);
+                    yPos += 5;
+                });
+                
+                yPos += 10;
+                
+                // Shopping List
+                doc.setFillColor(...rouge);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(14);
+                doc.setFont("helvetica", "bold");
+                doc.text("SHOPPING LIST", 105, yPos, { align: "center" });
+                yPos += 10;
+                
+                const shopping = [
+                    "PROTEINES:",
+                    "□ Oeufs entiers: 30 | □ Blanc de poulet: 1.2kg",
+                    "□ Saumon frais/fumé: 800g | □ Thon au naturel: 2 boîtes",
+                    "□ Dinde: 400g | □ Cabillaud: 200g",
+                    "",
+                    "GLUCIDES:",
+                    "□ Riz complet: 1kg | □ Quinoa: 500g | □ Pâtes complètes: 500g",
+                    "□ Flocons d'avoine: 500g | □ Pain complet: 1 pain",
+                    "□ Tortillas complètes: 1 paquet | □ Pommes de terre: 2kg",
+                    "",
+                    "LEGUMES & FRUITS:",
+                    "□ Brocolis: 1kg | □ Épinards: 500g | □ Haricots verts: 1kg",
+                    "□ Courgettes: 1.5kg | □ Poivrons: 1kg | □ Avocats: 10",
+                    "□ Bananes: 10 | □ Pommes: 5 | □ Fruits rouges: 1kg",
+                    "",
+                    "AUTRES:",
+                    "□ Whey protéine: 1 pot | □ Lait écrémé: 3L",
+                    "□ Yaourt grec 0%: 1kg | □ Fromage blanc 0%: 500g",
+                    "□ Huile d'olive: 1 bouteille | □ Beurre de cacahuète: 1 pot"
+                ];
+                
+                doc.setFontSize(9);
+                shopping.forEach(line => {
+                    if (line.includes(":")) {
+                        doc.setTextColor(...rouge);
+                        doc.setFont("helvetica", "bold");
+                    } else {
+                        doc.setTextColor(...blanc);
+                        doc.setFont("helvetica", "normal");
+                    }
+                    doc.text(line, 15, yPos);
+                    yPos += 4;
+                });
                 
             } else {
-                const content = `
-╔════════════════════════════════════════════════════════════════╗
-║        PROGRAMME MUSCULATION IRON FIT - 5 JOURS (PPL)         ║
-║                      100% GRATUIT - BY KAL                     ║
-╚════════════════════════════════════════════════════════════════╝
-
-LUNDI - PUSH (Pectoraux/Épaules/Triceps)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 ÉCHAUFFEMENT: 5-10 min vélo ou corde à sauter
-
-1. DÉVELOPPÉ COUCHÉ: 4 séries x 8-12 reps
-   Récup: 90s | Charge: 70-80% 1RM
-
-2. DÉVELOPPÉ INCLINÉ: 4 séries x 10-12 reps
-   Récup: 90s | Angle: 30-45°
-
-3. ÉCARTÉS HALTÈRES: 3 séries x 12-15 reps
-   Récup: 60s | Amplitude complète
-
-4. DÉVELOPPÉ MILITAIRE: 4 séries x 8-10 reps
-   Récup: 90s | Debout ou assis
-
-5. ÉLÉVATIONS LATÉRALES: 4 séries x 12-15 reps
-   Récup: 60s | Coudes légèrement fléchis
-
-6. EXTENSIONS TRICEPS: 3 séries x 12-15 reps
-   Récup: 60s | Corde ou barre
-
-7. DIPS: 3 séries x 10-15 reps
-   Récup: 90s | Torse penché pour pectoraux
-
-MARDI - PULL (Dos/Biceps)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 ÉCHAUFFEMENT: 5-10 min rameur
-
-1. TRACTIONS: 4 séries x 6-10 reps
-   Récup: 2min | Prise pronation, largeur épaules
-
-2. ROWING BARRE: 4 séries x 8-12 reps
-   Récup: 90s | Prise pronation
-
-3. ROWING HALTÈRE: 3 séries x 10-12 reps/side
-   Récup: 60s | Sur banc, unilatéral
-
-4. LAT PULLDOWN: 4 séries x 10-12 reps
-   Récup: 90s | Prise large
-
-5. CURL HALTÈRES: 4 séries x 10-12 reps
-   Récup: 60s | Supination
-
-6. CURL MARTEAU: 3 séries x 12-15 reps
-   Récup: 60s | Prise neutre
-
-7. FACE PULL: 3 séries x 15-20 reps
-   Récup: 45s | Corde, hauteur visage
-
-MERCREDI - LEGS (Jambes/Abdominaux)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 ÉCHAUFFEMENT: 5-10 min vélo + mobilité hanches
-
-1. SQUAT: 4 séries x 8-12 reps
-   Récup: 2min | Profondeur parallèle minimum
-
-2. LEG PRESS: 4 séries x 12-15 reps
-   Récup: 90s | Ne pas verrouiller genoux
-
-3. FENTES: 3 séries x 12 reps/jambe
-   Récup: 60s | Fente avant ou walking
-
-4. LEG EXTENSION: 3 séries x 15-20 reps
-   Récup: 60s | Contraction 2s en haut
-
-5. LEG CURL: 3 séries x 12-15 reps
-   Récup: 60s | Assis ou allongé
-
-6. MOLLETS DEBOUT: 4 séries x 15-20 reps
-   Récup: 45s | Étirement maximum
-
-7. PLANCHE: 3 séries x 45-60s
-   Récup: 60s | Gainage actif
-
-JEUDI - PUSH (Variation)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 ÉCHAUFFEMENT: 5-10 min vélo
-
-1. DÉVELOPPÉ MACHINE: 4 séries x 12-15 reps
-   Récup: 90s | Contrôle excentrique
-
-2. PEC DECK: 3 séries x 15-20 reps
-   Récup: 60s | Contraction maximale
-
-3. DÉVELOPPÉ ARNOLD: 3 séries x 10-12 reps
-   Récup: 90s | Rotation des poignets
-
-4. ÉLÉVATIONS FRONTALES: 3 séries x 12-15 reps
-   Récup: 60s | Haltère ou barre
-
-5. OISEAU: 3 séries x 15-20 reps
-   Récup: 45s | Légères haltères
-
-6. KICKBACK TRICEPS: 3 séries x 15-20 reps
-   Récup: 45s | Coude fixe
-
-7. CURL CONCENTRATION: 3 séries x 12-15 reps
-   Récup: 60s | Unilatéral, coude sur cuisse
-
-VENDREDI - PULL + ABDOS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔥 ÉCHAUFFEMENT: 5-10 min rameur
-
-1. ROWING MACHINE: 4 séries x 12-15 reps
-   Récup: 90s | Prise neutre ou large
-
-2. PULL OVER: 3 séries x 12-15 reps
-   Récup: 60s | Haltère ou barre
-
-3. SHRUGS: 4 séries x 12-15 reps
-   Récup: 60s | Haltères ou barre
-
-4. CURL BARRE: 3 séries x 10-12 reps
-   Récup: 60s | Barre droite ou EZ
-
-5. CURL PRISE MARTEAU: 3 séries x 12-15 reps
-   Récup: 60s | Alterné ou simultané
-
-6. CRUNCH: 4 séries x 20 reps
-   Récup: 45s | Ne pas tirer sur la nuque
-
-7. LEG RAISE: 3 séries x 15 reps
-   Récup: 60s | Suspendu ou au sol
-
-╔════════════════════════════════════════════════════════════════╗
-║                    CONSEILS IRON FIT                           ║
-╚════════════════════════════════════════════════════════════════╝
-
-PROGRESSION:
-• Augmentez les charges de 2.5-5% quand vous atteignez
-  le maximum des reps sur 2 séances consécutives
-• Gardez un journal d'entraînement
-• Prenez des photos toutes les 4 semaines
-
-TECHNIQUE:
-• Maîtrisez le mouvement avant d'augmenter la charge
-• Contrôlez la phase excentrique (2-3 secondes)
-• Ne bloquez jamais les articulations
-• Respirez: expirez à l'effort
-
-RÉCUPÉRATION:
-• 48h de repos entre deux sessions même groupe
-• Dormez 7-8h par nuit
-• Hydratation: 3L d'eau minimum
-• Étirements légers après l'entraînement
-
-NUTRITION:
-• Mangez dans les 30-60min post-workout
-• Privilégiez les protéines et glucides
-• Exemple: Shake whey + banane
-
-═══════════════════════════════════════════════════════════════════
-© 2026 Iron Fit By Kal - NO PAIN NO GAIN
-═══════════════════════════════════════════════════════════════════
-                `;
+                // Programme Musculation
+                doc.setTextColor(...rouge);
+                doc.setFontSize(18);
+                doc.setFont("helvetica", "bold");
+                doc.text("PROGRAMME MUSCULATION - 5 JOURS (PPL)", 105, yPos, { align: "center" });
+                yPos += 10;
                 
-                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'Programme_Musculation_IronFit_By_Kal.txt';
-                a.click();
+                // Lundi - Push
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("LUNDI - PUSH (Pectoraux/Épaules/Triceps)", 15, yPos);
+                yPos += 10;
+                
+                const lundiExos = [
+                    ["1. DÉVELOPPÉ COUCHÉ", "4 x 8-12 reps | Récup: 90s"],
+                    ["2. DÉVELOPPÉ INCLINÉ", "4 x 10-12 reps | Récup: 90s"],
+                    ["3. ÉCARTÉS HALTÈRES", "3 x 12-15 reps | Récup: 60s"],
+                    ["4. DÉVELOPPÉ MILITAIRE", "4 x 8-10 reps | Récup: 90s"],
+                    ["5. ÉLÉVATIONS LATÉRALES", "4 x 12-15 reps | Récup: 60s"],
+                    ["6. EXTENSIONS TRICEPS", "3 x 12-15 reps | Récup: 60s"],
+                    ["7. DIPS", "3 x 10-15 reps | Récup: 90s"]
+                ];
+                
+                doc.setFontSize(10);
+                lundiExos.forEach(([exo, detail]) => {
+                    doc.setTextColor(...rouge);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(exo, 15, yPos);
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(detail, 80, yPos);
+                    yPos += 5;
+                });
+                
+                yPos += 5;
+                
+                // Mardi - Pull
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("MARDI - PULL (Dos/Biceps)", 15, yPos);
+                yPos += 10;
+                
+                const mardiExos = [
+                    ["1. TRACTIONS", "4 x 6-10 reps | Récup: 2min"],
+                    ["2. ROWING BARRE", "4 x 8-12 reps | Récup: 90s"],
+                    ["3. ROWING HALTÈRE", "3 x 10-12 reps/side | Récup: 60s"],
+                    ["4. LAT PULLDOWN", "4 x 10-12 reps | Récup: 90s"],
+                    ["5. CURL HALTÈRES", "4 x 10-12 reps | Récup: 60s"],
+                    ["6. CURL MARTEAU", "3 x 12-15 reps | Récup: 60s"],
+                    ["7. FACE PULL", "3 x 15-20 reps | Récup: 45s"]
+                ];
+                
+                doc.setFontSize(10);
+                mardiExos.forEach(([exo, detail]) => {
+                    doc.setTextColor(...rouge);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(exo, 15, yPos);
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(detail, 80, yPos);
+                    yPos += 5;
+                });
+                
+                // Nouvelle page
+                doc.addPage();
+                doc.setFillColor(...noir);
+                doc.rect(0, 0, 210, 297, 'F');
+                
+                yPos = 20;
+                
+                // Mercredi - Legs
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("MERCREDI - LEGS (Jambes/Abdominaux)", 15, yPos);
+                yPos += 10;
+                
+                const mercrediExos = [
+                    ["1. SQUAT", "4 x 8-12 reps | Récup: 2min"],
+                    ["2. LEG PRESS", "4 x 12-15 reps | Récup: 90s"],
+                    ["3. FENTES", "3 x 12 reps/jambe | Récup: 60s"],
+                    ["4. LEG EXTENSION", "3 x 15-20 reps | Récup: 60s"],
+                    ["5. LEG CURL", "3 x 12-15 reps | Récup: 60s"],
+                    ["6. MOLLETS DEBOUT", "4 x 15-20 reps | Récup: 45s"],
+                    ["7. PLANCHE", "3 x 45-60s | Récup: 60s"]
+                ];
+                
+                doc.setFontSize(10);
+                mercrediExos.forEach(([exo, detail]) => {
+                    doc.setTextColor(...rouge);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(exo, 15, yPos);
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(detail, 80, yPos);
+                    yPos += 5;
+                });
+                
+                yPos += 5;
+                
+                // Jeudi - Push
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("JEUDI - PUSH (Variation)", 15, yPos);
+                yPos += 10;
+                
+                const jeudiExos = [
+                    ["1. DÉVELOPPÉ MACHINE", "4 x 12-15 reps | Récup: 90s"],
+                    ["2. PEC DECK", "3 x 15-20 reps | Récup: 60s"],
+                    ["3. DÉVELOPPÉ ARNOLD", "3 x 10-12 reps | Récup: 90s"],
+                    ["4. ÉLÉVATIONS FRONTALES", "3 x 12-15 reps | Récup: 60s"],
+                    ["5. OISEAU", "3 x 15-20 reps | Récup: 45s"],
+                    ["6. KICKBACK TRICEPS", "3 x 15-20 reps | Récup: 45s"],
+                    ["7. CURL CONCENTRATION", "3 x 12-15 reps | Récup: 60s"]
+                ];
+                
+                doc.setFontSize(10);
+                jeudiExos.forEach(([exo, detail]) => {
+                    doc.setTextColor(...rouge);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(exo, 15, yPos);
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(detail, 80, yPos);
+                    yPos += 5;
+                });
+                
+                yPos += 5;
+                
+                // Vendredi - Pull + Abdos
+                doc.setFillColor(...gris);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("VENDREDI - PULL + ABDOS", 15, yPos);
+                yPos += 10;
+                
+                const vendrediExos = [
+                    ["1. ROWING MACHINE", "4 x 12-15 reps | Récup: 90s"],
+                    ["2. PULL OVER", "3 x 12-15 reps | Récup: 60s"],
+                    ["3. SHRUGS", "4 x 12-15 reps | Récup: 60s"],
+                    ["4. CURL BARRE", "3 x 10-12 reps | Récup: 60s"],
+                    ["5. CURL PRISE MARTEAU", "3 x 12-15 reps | Récup: 60s"],
+                    ["6. CRUNCH", "4 x 20 reps | Récup: 45s"],
+                    ["7. LEG RAISE", "3 x 15 reps | Récup: 60s"]
+                ];
+                
+                doc.setFontSize(10);
+                vendrediExos.forEach(([exo, detail]) => {
+                    doc.setTextColor(...rouge);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(exo, 15, yPos);
+                    doc.setTextColor(...blanc);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(detail, 80, yPos);
+                    yPos += 5;
+                });
+                
+                yPos += 10;
+                
+                // Conseils
+                doc.setFillColor(...rouge);
+                doc.rect(10, yPos - 5, 190, 8, 'F');
+                doc.setTextColor(...blanc);
+                doc.setFontSize(14);
+                doc.setFont("helvetica", "bold");
+                doc.text("CONSEILS IRON FIT", 105, yPos, { align: "center" });
+                yPos += 10;
+                
+                const conseils = [
+                    "PROGRESSION:",
+                    "• Augmentez les charges de 2.5-5% quand vous atteignez le maximum des reps",
+                    "• Gardez un journal d'entraînement | Prenez des photos toutes les 4 semaines",
+                    "",
+                    "TECHNIQUE:",
+                    "• Maîtrisez le mouvement avant d'augmenter la charge",
+                    "• Contrôlez la phase excentrique (2-3 secondes)",
+                    "• Ne bloquez jamais les articulations | Respirez: expirez à l'effort",
+                    "",
+                    "RÉCUPÉRATION:",
+                    "• 48h de repos entre deux sessions même groupe",
+                    "• Dormez 7-8h par nuit | Hydratation: 3L d'eau minimum",
+                    "",
+                    "NUTRITION:",
+                    "• Mangez dans les 30-60min post-workout",
+                    "• Privilégiez les protéines et glucides (ex: Shake whey + banane)"
+                ];
+                
+                doc.setFontSize(9);
+                conseils.forEach(line => {
+                    if (line.includes(":")) {
+                        doc.setTextColor(...rouge);
+                        doc.setFont("helvetica", "bold");
+                    } else {
+                        doc.setTextColor(...blanc);
+                        doc.setFont("helvetica", "normal");
+                    }
+                    doc.text(line, 15, yPos);
+                    yPos += 4;
+                });
             }
+            
+            // Footer
+            doc.setFillColor(...rouge);
+            doc.rect(0, 287, 210, 10, 'F');
+            doc.setTextColor(...blanc);
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "bold");
+            doc.text("© 2026 Iron Fit By Kal - NO PAIN NO GAIN", 105, 293, { align: "center" });
+            
+            // Sauvegarde
+            const filename = type === 'nutrition' ? 'Programme_Nutrition_IronFit_By_Kal.pdf' : 'Programme_Musculation_IronFit_By_Kal.pdf';
+            doc.save(filename);
         }
 
         function scrollToSection(id) {
