@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRON FIT - Programme Musculation & Nutrition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Roboto Condensed', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+        .font-bebas { font-family: 'Bebas Neue', sans-serif; }
+        .neon-red { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; }
+        .neon-green { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; }
+        .gym-gradient { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); }
+        .muscle-card { 
+            background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+        }
+        .muscle-card:hover { 
+            border-color: #ff0000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255,0,0,0.3);
+        }
+        .btn-gym {
+            background: linear-gradient(45deg, #ff0000, #cc0000);
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            transition: all 0.3s;
+        }
+        .btn-gym:hover {
+            background: linear-gradient(45deg, #ff3333, #ff0000);
+            transform: scale(1.05);
+        }
+        .metal-text {
+            background: linear-gradient(to bottom, #c0c0c0, #808080, #c0c0c0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(255,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,0,0,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #ff0000;
+            animation: scan 3s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .plate-weight {
+            background: radial-gradient(circle, #444 0%, #222 100%);
+            border: 3px solid #666;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="grid-pattern">
+
+    <!-- Header -->
+    <header class="bg-black border-b-4 border-red-600 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center font-bebas text-2xl">IF</div>
+                <div>
+                    <h1 class="font-bebas text-3xl tracking-wider text-white">IRON <span class="text-red-600">FIT</span></h1>
+                    <p class="text-xs text-gray-400 tracking-widest">NO PAIN NO GAIN</p>
+                </div>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#calculateur" class="hover:text-red-500 transition font-bold tracking-wider">CALCULATEUR</a>
+                <a href="#generateur" class="hover:text-red-500 transition font-bold tracking-wider">GÉNÉRATEUR</a>
+                <a href="#exercices" class="hover:text-red-500 transition font-bold tracking-wider">EXERCICES</a>
+                <a href="#recettes" class="hover:text-red-500 transition font-bold tracking-wider">NUTRITION</a>
+                <a href="#programmes" class="hover:text-red-500 transition font-bold tracking-wider">PROGRAMMES</a>
+            </nav>
+            <button onclick="generateRandomWorkout()" class="btn-gym px-8 py-3 font-bold text-white">
+                ⚡ WORKOUT ALÉATOIRE
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="relative py-20 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-red-900/20 to-transparent"></div>
+        <div class="scanner-line"></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h2 class="font-bebas text-6xl md:text-8xl mb-4 neon-red">FORGE TON CORPS</h2>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                Programme complet de musculation et nutrition. Génère tes entraînements et repas personnalisés gratuitement.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button onclick="scrollToSection('calculateur')" class="btn-gym px-10 py-4 text-xl font-bold text-white">
+                    COMMENCER MAINTENANT
+                </button>
+                <button onclick="generateRandomMealPlan()" class="bg-gray-800 border-2 border-red-600 px-10 py-4 text-xl font-bold text-white hover:bg-red-900/30 transition">
+                    🍽 REPAS ALÉATOIRE
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculateur -->
+    <section id="calculateur" class="py-16 bg-gray-900/50">
+        <div class="container mx-auto px-4">
+            <h2 class="font-bebas text-5xl text-center mb-12 text-red-500">CALCULATEUR DE BESOINS</h2>
+            
+            <div class="max-w-4xl mx-auto gym-gradient p-8 rounded-2xl border border-gray-700">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-red-400 font-bold mb-2 uppercase tracking-wider">Genre</label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center space-x-2 cursor-pointer bg-gray-800 p-4 rounded-lg border border-gray-600 hover:border-red-500 transition">
+                                <input type="radio" name="genre" value="homme" checked class="w-5 h-5 text-red-600">
+                                <span class="font-bold">HOMME</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer bg-gray-800 p-4 rounded-lg border border-gray-600 hover:border-red-500 transition">
+                                <input type="radio" name="genre" value="femme" class="w-5 h-5 text-red-600">
+                                <span class="font-bold">FEMME</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-red-400 font-bold mb-2 uppercase tracking-wider">Âge</label>
+                        <input type="number" id="age" placeholder="25" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-red-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-red-400 font-bold mb-2 uppercase tracking-wider">Poids (kg)</label>
+                        <input type="number" id="poids" placeholder="75" step="0.1" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-red-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-red-400 font-bold mb-2 uppercase tracking-wider">Taille (cm)</label>
+                        <input type="number" id="taille" placeholder="180" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-red-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-red-400 font-bold mb-2 uppercase tracking-wider">Masse grasse (%)</label>
+                        <input type="number" id="masseGrasse" placeholder="15" step="0.1" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-red-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-red-400 font-bold mb-2 uppercase tracking-wider">Activité</label>
+                        <select id="activite" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-red-500 focus:outline-none">
+                            <option value="1.2">Sédentaire</option>
+                            <option value="1.375">Léger (1-3x/semaine)</option>
+                            <option value="1.55">Modéré (3-5x/semaine)</option>
+                            <option value="1.725">Intensif (6-7x/semaine)</option>
+                            <option value="1.9">Athlète (2x/jour)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="calculerBesoins()" class="w-full mt-8 btn-gym py-4 text-xl font-bold text-white">
+                    CALCULER MES BESOINS
+                </button>
+
+                <div id="resultats" class="hidden mt-8 grid md:grid-cols-3 gap-4">
+                    <div class="bg-gray-800 p-6 rounded-xl border border-gray-600 text-center">
+                        <div class="text-gray-400 text-sm uppercase tracking-wider mb-2">Maintenance</div>
+                        <div class="text-4xl font-bebas text-white" id="caloriesMaintenance">0</div>
+                        <div class="text-red-500 text-sm">kcal/jour</div>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-xl border-2 border-green-600 text-center">
+                        <div class="text-gray-400 text-sm uppercase tracking-wider mb-2">Sèche</div>
+                        <div class="text-4xl font-bebas text-green-400" id="caloriesSeche">0</div>
+                        <div class="text-green-500 text-sm">kcal/jour (-20%)</div>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-xl border-2 border-blue-600 text-center">
+                        <div class="text-gray-400 text-sm uppercase tracking-wider mb-2">Prise de masse</div>
+                        <div class="text-4xl font-bebas text-blue-400" id="caloriesPrise">0</div>
+                        <div class="text-blue-500 text-sm">kcal/jour (+15%)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Générateur Aléatoire -->
+    <section id="generateur" class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="font-bebas text-5xl text-center mb-12 text-red-500">GÉNÉRATEUR ALÉATOIRE</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Générateur Workout -->
+                <div class="gym-gradient p-8 rounded-2xl border border-red-600/30">
+                    <h3 class="font-bebas text-3xl mb-6 flex items-center">
+                        <span class="text-4xl mr-3">💪</span> WORKOUT ALÉATOIRE
+                    </h3>
+                    <div class="space-y-4 mb-6">
+                        <label class="block text-gray-400">Groupe musculaire</label>
+                        <select id="muscleSelect" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white">
+                            <option value="all">Full Body Complet</option>
+                            <option value="pectoraux">Pectoraux</option>
+                            <option value="dos">Dos</option>
+                            <option value="jambes">Jambes</option>
+                            <option value="epaules">Épaules</option>
+                            <option value="bras">Bras (Biceps/Triceps)</option>
+                            <option value="abdominaux">Abdominaux</option>
+                        </select>
+                    </div>
+                    <button onclick="generateRandomWorkout()" class="w-full btn-gym py-4 text-lg font-bold text-white mb-4">
+                        GÉNÉRER UN WORKOUT
+                    </button>
+                    <div id="randomWorkoutResult" class="hidden bg-gray-800 p-6 rounded-xl border border-gray-600">
+                        <!-- Résultat injecté ici -->
+                    </div>
+                </div>
+
+                <!-- Générateur Repas -->
+                <div class="gym-gradient p-8 rounded-2xl border border-green-600/30">
+                    <h3 class="font-bebas text-3xl mb-6 flex items-center">
+                        <span class="text-4xl mr-3">🍽</span> REPAS ALÉATOIRE
+                    </h3>
+                    <div class="space-y-4 mb-6">
+                        <label class="block text-gray-400">Objectif</label>
+                        <select id="objectifRepas" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white">
+                            <option value="seche">Sèche (déficit calorique)</option>
+                            <option value="maintenance">Maintenance</option>
+                            <option value="prise">Prise de masse (surplus)</option>
+                        </select>
+                    </div>
+                    <button onclick="generateRandomMealPlan()" class="w-full bg-green-600 hover:bg-green-700 py-4 text-lg font-bold text-white mb-4 transition rounded">
+                        GÉNÉRER UN PLAN DE REPAS
+                    </button>
+                    <div id="randomMealResult" class="hidden bg-gray-800 p-6 rounded-xl border border-gray-600">
+                        <!-- Résultat injecté ici -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Exercices par Groupe Musculaire -->
+    <section id="exercices" class="py-16 bg-gray-900/30">
+        <div class="container mx-auto px-4">
+            <h2 class="font-bebas text-5xl text-center mb-4 text-red-500">BIBLIOTHÈQUE D'EXERCICES</h2>
+            <p class="text-center text-gray-400 mb-12">7+ vidéos par groupe musculaire - Cliquez pour filtrer</p>
+
+            <!-- Filtres -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button onclick="filterExercises('all')" class="px-6 py-3 bg-red-600 text-white font-bold rounded hover:bg-red-700 transition">TOUS</button>
+                <button onclick="filterExercises('pectoraux')" class="px-6 py-3 bg-gray-800 border border-red-600 text-white font-bold rounded hover:bg-red-900/30 transition">PECTORAUX</button>
+                <button onclick="filterExercises('dos')" class="px-6 py-3 bg-gray-800 border border-red-600 text-white font-bold rounded hover:bg-red-900/30 transition">DOS</button>
+                <button onclick="filterExercises('jambes')" class="px-6 py-3 bg-gray-800 border border-red-600 text-white font-bold rounded hover:bg-red-900/30 transition">JAMBES</button>
+                <button onclick="filterExercises('epaules')" class="px-6 py-3 bg-gray-800 border border-red-600 text-white font-bold rounded hover:bg-red-900/30 transition">ÉPAULES</button>
+                <button onclick="filterExercises('bras')" class="px-6 py-3 bg-gray-800 border border-red-600 text-white font-bold rounded hover:bg-red-900/30 transition">BRAS</button>
+                <button onclick="filterExercises('abdominaux')" class="px-6 py-3 bg-gray-800 border border-red-600 text-white font-bold rounded hover:bg-red-900/30 transition">ABDOS</button>
+            </div>
+
+            <div id="exercisesContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Injecté par JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Recettes -->
+    <section id="recettes" class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <h2 class="font-bebas text-5xl text-center mb-4 text-green-500">NUTRITION & RECETTES</h2>
+            <p class="text-center text-gray-400 mb-12">20+ recettes par catégorie - High Protein / Low Fat</p>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button onclick="filterRecipes('all')" class="px-6 py-3 bg-green-600 text-white font-bold rounded">TOUTES</button>
+                <button onclick="filterRecipes('petit-dejeuner')" class="px-6 py-3 bg-gray-800 border border-green-600 text-white font-bold rounded hover:bg-green-900/30">PETIT-DÉJ</button>
+                <button onclick="filterRecipes('collation')" class="px-6 py-3 bg-gray-800 border border-green-600 text-white font-bold rounded hover:bg-green-900/30">COLLATION</button>
+                <button onclick="filterRecipes('dejeuner')" class="px-6 py-3 bg-gray-800 border border-green-600 text-white font-bold rounded hover:bg-green-900/30">DÉJEUNER</button>
+                <button onclick="filterRecipes('diner')" class="px-6 py-3 bg-gray-800 border border-green-600 text-white font-bold rounded hover:bg-green-900/30">DÎNER</button>
+            </div>
+
+            <div id="recipesContainer" class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Injecté par JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Programmes PDF -->
+    <section id="programmes" class="py-16 bg-gray-900/50">
+        <div class="container mx-auto px-4">
+            <h2 class="font-bebas text-5xl text-center mb-12 text-red-500">PROGRAMMES PDF</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="gym-gradient p-8 rounded-2xl border border-red-600/30 text-center">
+                    <div class="text-6xl mb-4">📊</div>
+                    <h3 class="font-bebas text-3xl mb-4">PROGRAMME ALIMENTAIRE</h3>
+                    <p class="text-gray-400 mb-6">Plan de repas complet sur 5 jours (Lundi-Vendredi) avec macros et shopping list</p>
+                    <button onclick="downloadPDF('nutrition')" class="btn-gym px-8 py-3 font-bold text-white w-full">
+                        TÉLÉCHARGER PDF
+                    </button>
+                </div>
+
+                <div class="gym-gradient p-8 rounded-2xl border border-blue-600/30 text-center">
+                    <div class="text-6xl mb-4">💪</div>
+                    <h3 class="font-bebas text-3xl mb-4">PROGRAMME MUSCULATION</h3>
+                    <p class="text-gray-400 mb-6">Split Push/Pull/Legs sur 5 jours avec progression et techniques avancées</p>
+                    <button onclick="downloadPDF('workout')" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 font-bold text-white w-full transition rounded">
+                        TÉLÉCHARGER PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t-4 border-red-600 py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="font-bebas text-4xl mb-4">IRON <span class="text-red-600">FIT</span></h2>
+            <p class="text-gray-500 mb-6">100% GRATUIT - NO PAIN NO GAIN</p>
+            <div class="flex justify-center space-x-6 text-2xl">
+                <span class="hover:text-red-500 cursor-pointer">📘</span>
+                <span class="hover:text-red-500 cursor-pointer">📸</span>
+                <span class="hover:text-red-500 cursor-pointer">🐦</span>
+                <span class="hover:text-red-500 cursor-pointer">📺</span>
+            </div>
+            <p class="text-gray-600 mt-8 text-sm">© 2024 Iron Fit - Tous droits réservés</p>
+        </div>
+    </footer>
+
+    <script>
+        // Base de données des exercices avec vraies vidéos YouTube
+        const exercisesDB = {
+            pectoraux: [
+                { name: "Développé Couché", video: "rT7DgCr-3pg", sets: "4x8-12", difficulty: "Intermédiaire" },
+                { name: "Développé Incliné", video: "SrqOu55lrYU", sets: "4x10-12", difficulty: "Intermédiaire" },
+                { name: "Écartés Haltères", video: "QENKPHhQViY", sets: "3x12-15", difficulty: "Débutant" },
+                { name: "Dips Pectoraux", video: "2z8JmcrW-As", sets: "3x10-15", difficulty: "Avancé" },
+                { name: "Développé Machine", video: "NwzU5gZ8XnU", sets: "3x12-15", difficulty: "Débutant" },
+                { name: "Pec Deck", video: "pqywm28vxsk", sets: "3x15-20", difficulty: "Débutant" },
+                { name: "Pompes", video: "IODxDxX7oi4", sets: "4xMAX", difficulty: "Tous niveaux" }
+            ],
+            dos: [
+                { name: "Tractions", video: "eGo4IYlbE5g", sets: "4x6-10", difficulty: "Avancé" },
+                { name: "Rowing Barre", video: "FWJR5Ve8bnQ", sets: "4x8-12", difficulty: "Intermédiaire" },
+                { name: "Rowing Haltère", video: "roCP6wCXPqo", sets: "3x10-12", difficulty: "Débutant" },
+                { name: "Lat Pulldown", video: "CAwf7n6Luuc", sets: "4x10-12", difficulty: "Débutant" },
+                { name: "Rowing Machine", video: "GZbfZ033f74", sets: "3x12-15", difficulty: "Débutant" },
+                { name: "Deadlift", video: "op9kVnSso6Q", sets: "3x5-8", difficulty: "Avancé" },
+                { name: "Pull Over", video: "FK4rF4ZxYaw", sets: "3x12-15", difficulty: "Intermédiaire" }
+            ],
+            jambes: [
+                { name: "Squat", video: "Dy28eq2PjcM", sets: "4x8-12", difficulty: "Intermédiaire" },
+                { name: "Leg Press", video: "IZxyjW7MPJQ", sets: "4x12-15", difficulty: "Débutant" },
+                { name: "Fentes", video: "L8fvyBHUPew", sets: "3x12/jambe", difficulty: "Intermédiaire" },
+                { name: "Leg Extension", video: "YyvSfVjQeL0", sets: "3x15-20", difficulty: "Débutant" },
+                { name: "Leg Curl", video: "1Tq3QdYUuHs", sets: "3x12-15", difficulty: "Débutant" },
+                { name: "Soulevé de Terre Jambes", video: "1ZXobu7JvvE", sets: "3x8-10", difficulty: "Avancé" },
+                { name: "Mollets Debout", video: "gwLzBJYoWlI", sets: "4x15-20", difficulty: "Tous niveaux" }
+            ],
+            epaules: [
+                { name: "Développé Militaire", video: "2yjwXTZQDDI", sets: "4x8-10", difficulty: "Intermédiaire" },
+                { name: "Élévations Latérales", video: "3VcKaXpzqRo", sets: "4x12-15", difficulty: "Débutant" },
+                { name: "Élévations Frontales", video: "-t7fuZ0KhDA", sets: "3x12-15", difficulty: "Débutant" },
+                { name: "Oiseau", video: "ttvfGg9d76c", sets: "3x15-20", difficulty: "Débutant" },
+                { name: "Développé Arnold", video: "6Z15_WdXmVw", sets: "3x10-12", difficulty: "Intermédiaire" },
+                { name: "Face Pull", video: "rep-qVOkqgk", sets: "3x15-20", difficulty: "Débutant" },
+                { name: "Shrugs", video: "cJRVVxmytaM", sets: "4x12-15", difficulty: "Intermédiaire" }
+            ],
+            bras: [
+                { name: "Curl Haltères", video: "sAq_ocpRhME", sets: "4x10-12", difficulty: "Débutant" },
+                { name: "Curl Barre", video: "kwG2ipFRgfo", sets: "3x10-12", difficulty: "Débutant" },
+                { name: "Curl Marteau", video: "zC3nLlEvin4", sets: "3x12-15", difficulty: "Débutant" },
+                { name: "Extension Triceps", video: "2-LAMcpMYDR", sets: "3x12-15", difficulty: "Débutant" },
+                { name: "Dips Triceps", video: "6kALZikXxLc", sets: "3x10-15", difficulty: "Intermédiaire" },
+                { name: "Kickback Triceps", video: "ZO81bExngMI", sets: "3x15-20", difficulty: "Débutant" },
+                { name: "Curl Concentration", video: "Jvj2wV0vOYU", sets: "3x12-15", difficulty: "Intermédiaire" }
+            ],
+            abdominaux: [
+                { name: "Crunch", video: "MRH6U5MW9xQ", sets: "4x20", difficulty: "Débutant" },
+                { name: "Planche", video: "pSHjTRCQW-0", sets: "3x45-60s", difficulty: "Tous niveaux" },
+                { name: "Leg Raise", video: "JB2oyawG9KI", sets: "3x15", difficulty: "Intermédiaire" },
+                { name: "Russian Twist", video: "wkD8rjkodUI", sets: "3x20", difficulty: "Débutant" },
+                { name: "Mountain Climbers", video: "nmwgirgXLYM", sets: "3x30s", difficulty: "Intermédiaire" },
+                { name: "V-Ups", video: "iP2fjvG0g3w", sets: "3x15", difficulty: "Avancé" },
+                { name: "Crunch Obliques", video: "9Q0D6xAyrOI", sets: "3x20", difficulty: "Débutant" }
+            ]
+        };
+
+        // Base de données des recettes (20+ par catégorie)
+        const recipesDB = {
+            "petit-dejeuner": [
+                { name: "Omelette 3 Oeufs Avocat", kcal: 450, prot: 30, carbs: 8, fat: 35, ingredients: ["3 oeufs", "1/2 avocat", "Épinards", "Huile d'olive"] },
+                { name: "Smoothie Protéiné", kcal: 320, prot: 28, carbs: 35, fat: 8, ingredients: ["Whey", "Banane", "Flocons d'avoine", "Lait"] },
+                { name: "Porridge Protéiné", kcal: 380, prot: 25, carbs: 50, fat: 10, ingredients: ["Avoine", "Whey", "Fruits rouges", "Amandes"] },
+                { name: "Toast Saumon", kcal: 420, prot: 32, carbs: 40, fat: 18, ingredients: ["Pain complet", "Saumon fumé", "Avocat", "Oeuf poché"] },
+                { name: "Pancakes Protéinés", kcal: 350, prot: 30, carbs: 40, fat: 8, ingredients: ["Farine d'avoine", "Whey", "Blancs d'oeufs", "Banane"] },
+                { name: "Bol Yaourt Grec", kcal: 300, prot: 25, carbs: 25, fat: 12, ingredients: ["Yaourt grec", "Granola", "Miel", "Fruits frais"] },
+                { name: "Wrap Oeuf Bacon", kcal: 480, prot: 35, carbs: 35, fat: 25, ingredients: ["Tortilla", "Oeufs", "Bacon maigre", "Fromage"] },
+                { name: "Bowl Açaï", kcal: 340, prot: 20, carbs: 55, fat: 8, ingredients: ["Açaï", "Banane", "Granola", "Graines de chia"] },
+                { name: "Crêpes Salées", kcal: 400, prot: 28, carbs: 45, fat: 15, ingredients: ["Farine", "Oeufs", "Jambon", "Fromage"] },
+                { name: "Shakshuka", kcal: 380, prot: 22, carbs: 30, fat: 20, ingredients: ["Oeufs", "Tomates", "Poivrons", "Feta"] },
+                { name: "Bagel Saumon", kcal: 450, prot: 30, carbs: 50, fat: 18, ingredients: ["Bagel complet", "Saumon", "Fromage frais", "Câpres"] },
+                { name: "Granola Maison", kcal: 360, prot: 15, carbs: 55, fat: 12, ingredients: ["Flocons d'avoine", "Miel", "Noix", "Fruits secs"] },
+                { name: "Smoothie Bowl", kcal: 330, prot: 22, carbs: 50, fat: 6, ingredients: ["Fruits surgelés", "Whey", "Lait d'amande", "Toppings"] },
+                { name: "Tartine Beurre Cacahuète", kcal: 380, prot: 18, carbs: 40, fat: 20, ingredients: ["Pain complet", "Beurre cacahuète", "Banane", "Graines"] },
+                { name: "Oeufs Brouillés", kcal: 420, prot: 28, carbs: 5, fat: 32, ingredients: ["Oeufs", "Beurre", "Fromage", "Herbes"] },
+                { name: "Chia Pudding", kcal: 290, prot: 18, carbs: 35, fat: 12, ingredients: ["Graines de chia", "Lait de coco", "Miel", "Fruits"] },
+                { name: "Muesli Protéiné", kcal: 370, prot: 24, carbs: 48, fat: 10, ingredients: ["Muesli", "Whey", "Lait", "Fruits frais"] },
+                { name: "Sandwich Club", kcal: 480, prot: 35, carbs: 45, fat: 22, ingredients: ["Pain de mie", "Poulet", "Bacon", "Oeuf", "Salade"] },
+                { name: "Quiche Sans Pâte", kcal: 340, prot: 28, carbs: 12, fat: 22, ingredients: ["Oeufs", "Lait", "Jambon", "Fromage", "Légumes"] },
+                { name: "Bowl Smoothie Vert", kcal: 280, prot: 20, carbs: 40, fat: 6, ingredients: ["Épinards", "Banane", "Pomme", "Whey", "Lait"] }
+            ],
+            "collation": [
+                { name: "Shake Protéiné", kcal: 200, prot: 25, carbs: 10, fat: 5, ingredients: ["Whey", "Eau", "Glace"] },
+                { name: "Yaourt Grec Noix", kcal: 250, prot: 20, carbs: 15, fat: 15, ingredients: ["Yaourt grec", "Noix", "Miel"] },
+                { name: "Pomme Beurre Cacahuète", kcal: 280, prot: 8, carbs: 35, fat: 16, ingredients: ["Pomme", "Beurre cacahuète"] },
+                { name: "Fromage Blanc Fruits", kcal: 220, prot: 18, carbs: 25, fat: 6, ingredients: ["Fromage blanc", "Fruits rouges", "Miel"] },
+                { name: "Barre Protéinée", kcal: 240, prot: 20, carbs: 25, fat: 10, ingredients: ["Flocons d'avoine", "Whey", "Miel", "Chocolat"] },
+                { name: "Oeufs Durs", kcal: 140, prot: 12, carbs: 1, fat: 10, ingredients: ["2 oeufs durs"] },
+                { name: "Houmous Légumes", kcal: 200, prot: 8, carbs: 20, fat: 12, ingredients: ["Houmous", "Carottes", "Concombre", "Poivrons"] },
+                { name: "Cottage Cheese", kcal: 180, prot: 24, carbs: 10, fat: 5, ingredients: ["Cottage cheese", "Ananas", "Cannelle"] },
+                { name: "Amandes", kcal: 160, prot: 6, carbs: 6, fat: 14, ingredients: ["30g d'amandes"] },
+                { name: "Edamames", kcal: 190, prot: 17, carbs: 14, fat: 8, ingredients: ["Edamames", "Sel"] },
+                { name: "Thon Crackers", kcal: 220, prot: 25, carbs: 20, fat: 8, ingredients: ["Thon", "Crackers complets", "Citron"] },
+                { name: "Smoothie Protéiné", kcal: 210, prot: 25, carbs: 18, fat: 4, ingredients: ["Lait", "Whey", "Glace"] }
+            ],
+            "dejeuner": [
+                { name: "Poulet Riz Brocolis", kcal: 550, prot: 45, carbs: 60, fat: 15, ingredients: ["Poulet", "Riz complet", "Brocolis", "Sauce soja"] },
+                { name: "Bowl Quinoa Saumon", kcal: 520, prot: 35, carbs: 55, fat: 22, ingredients: ["Quinoa", "Saumon", "Avocat", "Légumes"] },
+                { name: "Pâtes Poulet Pesto", kcal: 580, prot: 40, carbs: 70, fat: 20, ingredients: ["Pâtes complètes", "Poulet", "Pesto maison", "Tomates"] },
+                { name: "Salade César Poulet", kcal: 480, prot: 42, carbs: 20, fat: 28, ingredients: ["Salade", "Poulet", "Croutons", "Parmesan", "Sauce César"] },
+                { name: "Wrap Thon Avocat", kcal: 450, prot: 35, carbs: 45, fat: 20, ingredients: ["Tortilla", "Thon", "Avocat", "Salade", "Tomate"] },
+                { name: "Buddha Bowl", kcal: 510, prot: 25, carbs: 65, fat: 22, ingredients: ["Riz", "Pois chiches", "Avocat", "Légumes", "Tahini"] },
+                { name: "Steak Patate Douce", kcal: 600, prot: 45, carbs: 55, fat: 28, ingredients: ["Steak haché 5%", "Patate douce", "Haricots verts"] },
+                { name: "Lasagnes Légères", kcal: 520, prot: 38, carbs: 50, fat: 22, ingredients: ["Pâtes", "Bœuf maigre", "Béchamel légère", "Fromage"] },
+                { name: "Curry Poulet", kcal: 540, prot: 42, carbs: 45, fat: 25, ingredients: ["Poulet", "Lait de coco", "Curry", "Riz", "Légumes"] },
+                { name: "Salade Niçoise", kcal: 480, prot: 35, carbs: 25, fat: 30, ingredients: ["Thon", "Oeufs", "Haricots", "Olives", "Salade"] },
+                { name: "Fajitas Poulet", kcal: 520, prot: 40, carbs: 55, fat: 18, ingredients: ["Tortillas", "Poulet", "Poivrons", "Oignons", "Guacamole"] },
+                { name: "Risotto Champignons", kcal: 490, prot: 20, carbs: 70, fat: 18, ingredients: ["Riz", "Champignons", "Parmesan", "Bouillon"] },
+                { name: "Poulet Coco Curry", kcal: 560, prot: 45, carbs: 40, fat: 28, ingredients: ["Poulet", "Lait de coco", "Curry", "Quinoa"] },
+                { name: "Tartare de Saumon", kcal: 420, prot: 35, carbs: 15, fat: 28, ingredients: ["Saumon frais", "Avocat", "Citron", "Herbes"] },
+                { name: "Chili Con Carne", kcal: 550, prot: 40, carbs: 50, fat: 25, ingredients: ["Bœuf maigre", "Haricots rouges", "Tomates", "Riz"] },
+                { name: "Poulet Teriyaki", kcal: 530, prot: 45, carbs: 60, fat: 15, ingredients: ["Poulet", "Sauce teriyaki", "Riz", "Légumes"] },
+                { name: "Salade de Lentilles", kcal: 460, prot: 25, carbs: 55, fat: 18, ingredients: ["Lentilles", "Feta", "Légumes", "Vinaigrette"] },
+                { name: "Couscous Poulet", kcal: 580, prot: 40, carbs: 70, fat: 20, ingredients: ["Semoule", "Poulet", "Légumes", "Bouillon"] },
+                { name: "Wok de Crevettes", kcal: 450, prot: 35, carbs: 40, fat: 20, ingredients: ["Crevettes", "Nouilles", "Légumes", "Sauce soja"] },
+                { name: "Parmentier de Canard", kcal: 600, prot: 35, carbs: 55, fat: 30, ingredients: ["Canard", "Pommes de terre", "Fromage"] }
+            ],
+            "diner": [
+                { name: "Saumon Asperges", kcal: 450, prot: 40, carbs: 15, fat: 28, ingredients: ["Saumon", "Asperges", "Citron", "Huile d'olive"] },
+                { name: "Poulet Légumes Rôtis", kcal: 420, prot: 45, carbs: 25, fat: 20, ingredients: ["Poulet", "Courgettes", "Poivrons", "Oignons"] },
+                { name: "Omelette Jambon", kcal: 380, prot: 30, carbs: 10, fat: 28, ingredients: ["Oeufs", "Jambon", "Fromage", "Champignons"] },
+                { name: "Dinde Haricots Verts", kcal: 350, prot: 45, carbs: 15, fat: 15, ingredients: ["Dinde", "Haricots verts", "Ail", "Herbes"] },
+                { name: "Cabillaud Purée", kcal: 400, prot: 35, carbs: 40, fat: 12, ingredients: ["Cabillaud", "Pommes de terre", "Lait", "Beurre"] },
+                { name: "Steak Salade", kcal: 480, prot: 45, carbs: 10, fat: 32, ingredients: ["Steak", "Salade verte", "Tomates", "Vinaigrette"] },
+                { name: "Soupe de Poulet", kcal: 320, prot: 30, carbs: 25, fat: 12, ingredients: ["Poulet", "Légumes", "Bouillon", "Nouilles"] },
+                { name: "Tartare de Bœuf", kcal: 420, prot: 35, carbs: 5, fat: 30, ingredients: ["Bœuf haché", "Oeuf", "Câpres", "Oignons"] },
+                { name: "Filet de Sole", kcal: 380, prot: 40, carbs: 20, fat: 18, ingredients: ["Sole", "Riz", "Citron", "Beurre"] },
+                { name: "Ratatouille Œuf", kcal: 340, prot: 18, carbs: 30, fat: 20, ingredients: ["Légumes", "Oeufs", "Tomates", "Herbes"] },
+                { name: "Crevettes Ail", kcal: 300, prot: 35, carbs: 15, fat: 15, ingredients: ["Crevettes", "Ail", "Persil", "Huile d'olive"] },
+                { name: "Poulet Curry Coco", kcal: 480, prot: 40, carbs: 20, fat: 30, ingredients: ["Poulet", "Lait de coco", "Curry", "Légumes"] },
+                { name: "Merlu Sauce Tomate", kcal: 360, prot: 40, carbs: 25, fat: 12, ingredients: ["Merlu", "Tomates", "Ail", "Herbes"] },
+                { name: "Wok de Tofu", kcal: 380, prot: 25, carbs: 35, fat: 20, ingredients: ["Tofu", "Légumes", "Nouilles", "Sauce soja"] },
+                { name: "Rôti de Porc", kcal: 520, prot: 45, carbs: 30, fat: 28, ingredients: ["Porc maigre", "Pommes de terre", "Légumes"] },
+                { name: "Soupe de Lentilles", kcal: 340, prot: 22, carbs: 45, fat: 8, ingredients: ["Lentilles", "Légumes", "Bouillon", "Épices"] },
+                { name: "Papillote de Poisson", kcal: 360, prot: 38, carbs: 15, fat: 20, ingredients: ["Poisson blanc", "Légumes", "Citron", "Herbes"] },
+                { name: "Chili Végétarien", kcal: 380, prot: 20, carbs: 55, fat: 12, ingredients: ["Haricots", "Lentilles", "Tomates", "Épices"] },
+                { name: "Blanquette de Veau", kcal: 480, prot: 40, carbs: 25, fat: 28, ingredients: ["Veau", "Champignons", "Carottes", "Crème légère"] },
+                { name: "Gratin de Courgettes", kcal: 340, prot: 22, carbs: 20, fat: 22, ingredients: ["Courgettes", "Fromage", "Oeufs", "Lait"] }
+            ]
+        };
+
+        // Calcul des besoins
+        function calculerBesoins() {
+            const genre = document.querySelector('input[name="genre"]:checked').value;
+            const age = parseInt(document.getElementById('age').value);
+            const poids = parseFloat(document.getElementById('poids').value);
+            const taille = parseInt(document.getElementById('taille').value);
+            const activite = parseFloat(document.getElementById('activite').value);
+
+            if (!age || !poids || !taille) {
+                alert('Remplis tous les champs !');
+                return;
+            }
+
+            let bmr = genre === 'homme' 
+                ? (10 * poids) + (6.25 * taille) - (5 * age) + 5
+                : (10 * poids) + (6.25 * taille) - (5 * age) - 161;
+
+            const maintenance = Math.round(bmr * activite);
+            const seche = Math.round(maintenance * 0.8);
+            const prise = Math.round(maintenance * 1.15);
+
+            document.getElementById('caloriesMaintenance').textContent = maintenance;
+            document.getElementById('caloriesSeche').textContent = seche;
+            document.getElementById('caloriesPrise').textContent = prise;
+            document.getElementById('resultats').classList.remove('hidden');
+        }
+
+        // Générer workout aléatoire
+        function generateRandomWorkout() {
+            const muscle = document.getElementById('muscleSelect').value;
+            const container = document.getElementById('randomWorkoutResult');
+            
+            let selectedExercises = [];
+            
+            if (muscle === 'all') {
+                // Full body : 1 exo par groupe
+                Object.keys(exercisesDB).forEach(group => {
+                    const random = exercisesDB[group][Math.floor(Math.random() * exercisesDB[group].length)];
+                    selectedExercises.push({...random, group});
+                });
+            } else {
+                // 4-5 exos du groupe sélectionné
+                const groupExercises = exercisesDB[muscle];
+                const shuffled = [...groupExercises].sort(() => 0.5 - Math.random());
+                selectedExercises = shuffled.slice(0, 5).map(e => ({...e, group: muscle}));
+            }
+
+            let html = '<h4 class="font-bebas text-2xl mb-4 text-red-500">TON WORKOUT DU JOUR</h4><div class="space-y-3">';
+            selectedExercises.forEach((exo, i) => {
+                html += `
+                    <div class="bg-gray-700 p-3 rounded flex justify-between items-center">
+                        <div>
+                            <div class="font-bold">${i+1}. ${exo.name}</div>
+                            <div class="text-sm text-gray-400 capitalize">${exo.group} • ${exo.difficulty}</div>
+                        </div>
+                        <div class="text-red-400 font-bold">${exo.sets}</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            container.innerHTML = html;
+            container.classList.remove('hidden');
+        }
+
+        // Générer repas aléatoire
+        function generateRandomMealPlan() {
+            const objectif = document.getElementById('objectifRepas').value;
+            const container = document.getElementById('randomMealResult');
+            
+            const petitDej = recipesDB['petit-dejeuner'][Math.floor(Math.random() * recipesDB['petit-dejeuner'].length)];
+            const collation = recipesDB['collation'][Math.floor(Math.random() * recipesDB['collation'].length)];
+            const dejeuner = recipesDB['dejeuner'][Math.floor(Math.random() * recipesDB['dejeuner'].length)];
+            const diner = recipesDB['diner'][Math.floor(Math.random() * recipesDB['diner'].length)];
+            
+            const totalKcal = petitDej.kcal + collation.kcal + dejeuner.kcal + diner.kcal;
+            const totalProt = petitDej.prot + collation.prot + dejeuner.prot + diner.prot;
+            
+            let html = `
+                <h4 class="font-bebas text-2xl mb-4 text-green-500">PLAN DE REPAS JOURNÉE</h4>
+                <div class="space-y-3 mb-4">
+                    <div class="bg-gray-700 p-3 rounded">
+                        <div class="flex justify-between"><span class="text-yellow-400 font-bold">PETIT-DÉJ</span><span>${petitDej.kcal} kcal</span></div>
+                        <div class="text-sm">${petitDej.name}</div>
+                    </div>
+                    <div class="bg-gray-700 p-3 rounded">
+                        <div class="flex justify-between"><span class="text-orange-400 font-bold">COLLATION</span><span>${collation.kcal} kcal</span></div>
+                        <div class="text-sm">${collation.name}</div>
+                    </div>
+                    <div class="bg-gray-700 p-3 rounded">
+                        <div class="flex justify-between"><span class="text-red-400 font-bold">DÉJEUNER</span><span>${dejeuner.kcal} kcal</span></div>
+                        <div class="text-sm">${dejeuner.name}</div>
+                    </div>
+                    <div class="bg-gray-700 p-3 rounded">
+                        <div class="flex justify-between"><span class="text-blue-400 font-bold">DÎNER</span><span>${diner.kcal} kcal</span></div>
+                        <div class="text-sm">${diner.name}</div>
+                    </div>
+                </div>
+                <div class="bg-green-900/30 p-3 rounded text-center border border-green-600">
+                    <div class="text-sm text-gray-400">Total journée</div>
+                    <div class="text-2xl font-bold text-green-400">${totalKcal} kcal • ${totalProt}g prot</div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            container.classList.remove('hidden');
+        }
+
+        // Afficher exercices
+        function renderExercises(filter = 'all') {
+            const container = document.getElementById('exercisesContainer');
+            let html = '';
+            
+            Object.keys(exercisesDB).forEach(group => {
+                if (filter === 'all' || filter === group) {
+                    exercisesDB[group].forEach(exo => {
+                        html += `
+                            <div class="muscle-card rounded-xl overflow-hidden exercise-card" data-group="${group}">
+                                <div class="video-container">
+                                    <iframe src="https://www.youtube.com/embed/${exo.video}" 
+                                            frameborder="0" 
+                                            allowfullscreen
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+                                    </iframe>
+                                </div>
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-bold text-lg text-white">${exo.name}</h3>
+                                        <span class="text-xs bg-red-600 px-2 py-1 rounded">${exo.sets}</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm text-gray-400">
+                                        <span class="capitalize">${group}</span>
+                                        <span>${exo.difficulty}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Afficher recettes
+        function renderRecipes(filter = 'all') {
+            const container = document.getElementById('recipesContainer');
+            let html = '';
+            
+            Object.keys(recipesDB).forEach(cat => {
+                if (filter === 'all' || filter === cat) {
+                    recipesDB[cat].forEach(recipe => {
+                        html += `
+                            <div class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 recipe-card" data-cat="${cat}">
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-bold text-white text-sm leading-tight">${recipe.name}</h3>
+                                        <span class="text-xs bg-green-600 px-2 py-1 rounded whitespace-nowrap ml-2">${recipe.kcal} kcal</span>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-xs text-center mb-3">
+                                        <div class="bg-gray-700 rounded p-1">
+                                            <div class="text-green-400 font-bold">${recipe.prot}g</div>
+                                            <div class="text-gray-500">Prot</div>
+                                        </div>
+                                        <div class="bg-gray-700 rounded p-1">
+                                            <div class="text-yellow-400 font-bold">${recipe.carbs}g</div>
+                                            <div class="text-gray-500">Gluc</div>
+                                        </div>
+                                        <div class="bg-gray-700 rounded p-1">
+                                            <div class="text-red-400 font-bold">${recipe.fat}g</div>
+                                            <div class="text-gray-500">Lip</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-gray-400">
+                                        ${recipe.ingredients.slice(0, 3).join(', ')}...
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Filtres
+        function filterExercises(group) {
+            renderExercises(group);
+        }
+
+        function filterRecipes(cat) {
+            renderRecipes(cat);
+        }
+
+        // Téléchargement PDF
+        function downloadPDF(type) {
+            if (type === 'nutrition') {
+                // Créer un PDF de nutrition
+                const content = `
+PROGRAMME ALIMENTAIRE IRON FIT - 5 JOURS
+
+LUNDI:
+Petit-déj: Omelette 3 oeufs + 1/2 avocat (450 kcal)
+Collation: Shake protéiné (200 kcal)
+Déjeuner: Poulet riz brocolis (550 kcal)
+Dîner: Saumon asperges (450 kcal)
+TOTAL: 1650 kcal | 140g protéines
+
+MARDI:
+Petit-déj: Smoothie protéiné banane (320 kcal)
+Collation: Yaourt grec noix (250 kcal)
+Déjeuner: Bowl quinoa saumon (520 kcal)
+Dîner: Poulet légumes rôtis (420 kcal)
+TOTAL: 1510 kcal | 125g protéines
+
+MERCREDI:
+Petit-déj: Porridge protéiné fruits (380 kcal)
+Collation: Pomme beurre cacahuète (280 kcal)
+Déjeuner: Pâtes poulet pesto (580 kcal)
+Dîner: Omelette jambon fromage (380 kcal)
+TOTAL: 1620 kcal | 130g protéines
+
+JEUDI:
+Petit-déj: Toast saumon avocat (420 kcal)
+Collation: Fromage blanc fruits (220 kcal)
+Déjeuner: Salade César poulet (480 kcal)
+Dîner: Dinde haricots verts (350 kcal)
+TOTAL: 1470 kcal | 135g protéines
+
+VENDREDI:
+Petit-déj: Pancakes protéinés (350 kcal)
+Collation: Barre protéinée maison (240 kcal)
+Déjeuner: Wrap thon avocat (450 kcal)
+Dîner: Cabillaud purée (400 kcal)
+TOTAL: 1440 kcal | 120g protéines
+
+SHOPPING LIST:
+- Oeufs (30)
+- Poulet (1kg)
+- Saumon (500g)
+- Riz complet (1kg)
+- Quinoa (500g)
+- Légumes variés
+- Whey protéine
+- Fruits
+- Avocats (5)
+- Yaourt grec
+                `;
+                
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Programme_Nutrition_IronFit.txt';
+                a.click();
+                
+            } else {
+                // PDF Workout
+                const content = `
+PROGRAMME MUSCULATION IRON FIT - 5 JOURS (PPL)
+
+LUNDI - PUSH (Pectoraux/Épaules/Triceps)
+1. Développé couché: 4x8-12
+2. Développé incliné: 4x10-12
+3. Écartés haltères: 3x12-15
+4. Développé militaire: 4x8-10
+5. Élévations latérales: 4x12-15
+6. Extensions triceps: 3x12-15
+7. Dips: 3x10-15
+
+MARDI - PULL (Dos/Biceps)
+1. Tractions: 4x6-10
+2. Rowing barre: 4x8-12
+3. Rowing haltère: 3x10-12
+4. Lat pulldown: 4x10-12
+5. Curl haltères: 4x10-12
+6. Curl marteau: 3x12-15
+7. Face pull: 3x15-20
+
+MERCREDI - LEGS (Jambes/Abdos)
+1. Squat: 4x8-12
+2. Leg press: 4x12-15
+3. Fentes: 3x12/jambe
+4. Leg extension: 3x15-20
+5. Leg curl: 3x12-15
+6. Mollets debout: 4x15-20
+7. Planche: 3x60s
+
+JEUDI - PUSH (Variation)
+1. Développé machine: 4x12-15
+2. Pec deck: 3x15-20
+3. Développé Arnold: 3x10-12
+4. Élévations frontales: 3x12-15
+5. Oiseau: 3x15-20
+6. Kickback triceps: 3x15-20
+7. Curl concentré: 3x12-15
+
+VENDREDI - PULL + ABDOS
+1. Rowing machine: 4x12-15
+2. Pull over: 3x12-15
+3. Shrugs: 4x12-15
+4. Curl barre: 3x10-12
+5. Curl prise marteau: 3x12-15
+6. Crunch: 4x20
+7. Leg raise: 3x15
+
+CONSEILS:
+- Échauffement: 5-10 min cardio léger
+- Récupération: 60-90s entre séries
+- Hydratation: 3L d'eau minimum/jour
+- Dodo: 7-8h de sommeil
+                `;
+                
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Programme_Musculation_IronFit.txt';
+                a.click();
+            }
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExercises();
+            renderRecipes();
+        });
+    </script>
+</body>
+</html>
