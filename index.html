@@ -78,6 +78,14 @@
             border: 3px solid #666;
             border-radius: 50%;
         }
+        .ingredient-list {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        .ingredient-list span {
+            display: block;
+            margin-bottom: 2px;
+        }
     </style>
 </head>
 <body class="grid-pattern">
@@ -285,7 +293,7 @@
     <section id="recettes" class="py-16 bg-black">
         <div class="container mx-auto px-4">
             <h2 class="font-bebas text-5xl text-center mb-4 text-green-500">NUTRITION & RECETTES</h2>
-            <p class="text-center text-gray-400 mb-12">20+ recettes par catégorie - High Protein / Low Fat</p>
+            <p class="text-center text-gray-400 mb-12">20+ recettes par catégorie avec grammages précis - High Protein / Low Fat</p>
 
             <div class="flex flex-wrap justify-center gap-4 mb-12">
                 <button onclick="filterRecipes('all')" class="px-6 py-3 bg-green-600 text-white font-bold rounded">TOUTES</button>
@@ -310,7 +318,7 @@
                 <div class="gym-gradient p-8 rounded-2xl border border-red-600/30 text-center">
                     <div class="text-6xl mb-4">📊</div>
                     <h3 class="font-bebas text-3xl mb-4">PROGRAMME ALIMENTAIRE</h3>
-                    <p class="text-gray-400 mb-6">Plan de repas complet sur 5 jours (Lundi-Vendredi) avec macros et shopping list</p>
+                    <p class="text-gray-400 mb-6">Plan de repas complet sur 5 jours (Lundi-Vendredi) avec macros et shopping list détaillée</p>
                     <button onclick="downloadPDF('nutrition')" class="btn-gym px-8 py-3 font-bold text-white w-full">
                         TÉLÉCHARGER PDF
                     </button>
@@ -339,16 +347,16 @@
                 <span class="hover:text-red-500 cursor-pointer">🐦</span>
                 <span class="hover:text-red-500 cursor-pointer">📺</span>
             </div>
-            <p class="text-gray-600 mt-8 text-sm">© 2024 Iron Fit - Tous droits réservés</p>
+            <p class="text-gray-600 mt-8 text-sm">© 2026 Iron Fit By Kal - Tous droits réservés</p>
         </div>
     </footer>
 
     <script>
-        // Base de données des exercices avec vraies vidéos YouTube
+        // Base de données des exercices avec vidéos YouTube FR vérifiées
         const exercisesDB = {
             pectoraux: [
-                { name: "Développé Couché", video: "rT7DgCr-3pg", sets: "4x8-12", difficulty: "Intermédiaire" },
-                { name: "Développé Incliné", video: "SrqOu55lrYU", sets: "4x10-12", difficulty: "Intermédiaire" },
+                { name: "Développé Couché", video: "4HvI_hCErGA", sets: "4x8-12", difficulty: "Intermédiaire" },
+                { name: "Développé Incliné", video: "jPLdzq9mIKQ", sets: "4x10-12", difficulty: "Intermédiaire" },
                 { name: "Écartés Haltères", video: "QENKPHhQViY", sets: "3x12-15", difficulty: "Débutant" },
                 { name: "Dips Pectoraux", video: "2z8JmcrW-As", sets: "3x10-15", difficulty: "Avancé" },
                 { name: "Développé Machine", video: "NwzU5gZ8XnU", sets: "3x12-15", difficulty: "Débutant" },
@@ -402,87 +410,483 @@
             ]
         };
 
-        // Base de données des recettes (20+ par catégorie)
+        // Base de données des recettes avec grammages précis (20+ par catégorie)
         const recipesDB = {
             "petit-dejeuner": [
-                { name: "Omelette 3 Oeufs Avocat", kcal: 450, prot: 30, carbs: 8, fat: 35, ingredients: ["3 oeufs", "1/2 avocat", "Épinards", "Huile d'olive"] },
-                { name: "Smoothie Protéiné", kcal: 320, prot: 28, carbs: 35, fat: 8, ingredients: ["Whey", "Banane", "Flocons d'avoine", "Lait"] },
-                { name: "Porridge Protéiné", kcal: 380, prot: 25, carbs: 50, fat: 10, ingredients: ["Avoine", "Whey", "Fruits rouges", "Amandes"] },
-                { name: "Toast Saumon", kcal: 420, prot: 32, carbs: 40, fat: 18, ingredients: ["Pain complet", "Saumon fumé", "Avocat", "Oeuf poché"] },
-                { name: "Pancakes Protéinés", kcal: 350, prot: 30, carbs: 40, fat: 8, ingredients: ["Farine d'avoine", "Whey", "Blancs d'oeufs", "Banane"] },
-                { name: "Bol Yaourt Grec", kcal: 300, prot: 25, carbs: 25, fat: 12, ingredients: ["Yaourt grec", "Granola", "Miel", "Fruits frais"] },
-                { name: "Wrap Oeuf Bacon", kcal: 480, prot: 35, carbs: 35, fat: 25, ingredients: ["Tortilla", "Oeufs", "Bacon maigre", "Fromage"] },
-                { name: "Bowl Açaï", kcal: 340, prot: 20, carbs: 55, fat: 8, ingredients: ["Açaï", "Banane", "Granola", "Graines de chia"] },
-                { name: "Crêpes Salées", kcal: 400, prot: 28, carbs: 45, fat: 15, ingredients: ["Farine", "Oeufs", "Jambon", "Fromage"] },
-                { name: "Shakshuka", kcal: 380, prot: 22, carbs: 30, fat: 20, ingredients: ["Oeufs", "Tomates", "Poivrons", "Feta"] },
-                { name: "Bagel Saumon", kcal: 450, prot: 30, carbs: 50, fat: 18, ingredients: ["Bagel complet", "Saumon", "Fromage frais", "Câpres"] },
-                { name: "Granola Maison", kcal: 360, prot: 15, carbs: 55, fat: 12, ingredients: ["Flocons d'avoine", "Miel", "Noix", "Fruits secs"] },
-                { name: "Smoothie Bowl", kcal: 330, prot: 22, carbs: 50, fat: 6, ingredients: ["Fruits surgelés", "Whey", "Lait d'amande", "Toppings"] },
-                { name: "Tartine Beurre Cacahuète", kcal: 380, prot: 18, carbs: 40, fat: 20, ingredients: ["Pain complet", "Beurre cacahuète", "Banane", "Graines"] },
-                { name: "Oeufs Brouillés", kcal: 420, prot: 28, carbs: 5, fat: 32, ingredients: ["Oeufs", "Beurre", "Fromage", "Herbes"] },
-                { name: "Chia Pudding", kcal: 290, prot: 18, carbs: 35, fat: 12, ingredients: ["Graines de chia", "Lait de coco", "Miel", "Fruits"] },
-                { name: "Muesli Protéiné", kcal: 370, prot: 24, carbs: 48, fat: 10, ingredients: ["Muesli", "Whey", "Lait", "Fruits frais"] },
-                { name: "Sandwich Club", kcal: 480, prot: 35, carbs: 45, fat: 22, ingredients: ["Pain de mie", "Poulet", "Bacon", "Oeuf", "Salade"] },
-                { name: "Quiche Sans Pâte", kcal: 340, prot: 28, carbs: 12, fat: 22, ingredients: ["Oeufs", "Lait", "Jambon", "Fromage", "Légumes"] },
-                { name: "Bowl Smoothie Vert", kcal: 280, prot: 20, carbs: 40, fat: 6, ingredients: ["Épinards", "Banane", "Pomme", "Whey", "Lait"] }
+                { name: "Omelette 3 Oeufs Avocat", kcal: 450, prot: 30, carbs: 8, fat: 35, ingredients: [
+                    { name: "Oeufs entiers", qty: "3 (150g)" },
+                    { name: "Avocat", qty: "1/2 (75g)" },
+                    { name: "Épinards frais", qty: "30g" },
+                    { name: "Huile d'olive", qty: "5ml (1 c.à.c)" },
+                    { name: "Sel, poivre", qty: "qs" }
+                ]},
+                { name: "Smoothie Protéiné", kcal: 320, prot: 28, carbs: 35, fat: 8, ingredients: [
+                    { name: "Whey protéine", qty: "30g (1 scoop)" },
+                    { name: "Banane", qty: "1 moyenne (120g)" },
+                    { name: "Flocons d'avoine", qty: "40g" },
+                    { name: "Lait écrémé", qty: "250ml" },
+                    { name: "Glace", qty: "3-4 cubes" }
+                ]},
+                { name: "Porridge Protéiné", kcal: 380, prot: 25, carbs: 50, fat: 10, ingredients: [
+                    { name: "Flocons d'avoine", qty: "60g" },
+                    { name: "Whey vanille", qty: "20g (2/3 scoop)" },
+                    { name: "Fruits rouges", qty: "80g" },
+                    { name: "Amandes effilées", qty: "10g" },
+                    { name: "Lait d'amande", qty: "200ml" }
+                ]},
+                { name: "Toast Saumon Avocat", kcal: 420, prot: 32, carbs: 40, fat: 18, ingredients: [
+                    { name: "Pain complet", qty: "2 tranches (60g)" },
+                    { name: "Saumon fumé", qty: "60g" },
+                    { name: "Avocat", qty: "1/2 (75g)" },
+                    { name: "Oeuf poché", qty: "1 (50g)" },
+                    { name: "Citron", qty: "1/2" }
+                ]},
+                { name: "Pancakes Protéinés", kcal: 350, prot: 30, carbs: 40, fat: 8, ingredients: [
+                    { name: "Farine d'avoine", qty: "50g" },
+                    { name: "Whey", qty: "20g" },
+                    { name: "Blancs d'oeufs", qty: "2 (70g)" },
+                    { name: "Banane mûre", qty: "1 (100g)" },
+                    { name: "Levure chimique", qty: "3g" }
+                ]},
+                { name: "Bol Yaourt Grec", kcal: 300, prot: 25, carbs: 25, fat: 12, ingredients: [
+                    { name: "Yaourt grec 0%", qty: "200g" },
+                    { name: "Granola maison", qty: "30g" },
+                    { name: "Miel", qty: "10g (1 c.à.c)" },
+                    { name: "Fruits frais", qty: "100g" },
+                    { name: "Graines de chia", qty: "5g" }
+                ]},
+                { name: "Wrap Oeuf Bacon", kcal: 480, prot: 35, carbs: 35, fat: 25, ingredients: [
+                    { name: "Tortilla complète", qty: "1 (60g)" },
+                    { name: "Oeufs entiers", qty: "2 (100g)" },
+                    { name: "Bacon maigre", qty: "2 tranches (40g)" },
+                    { name: "Fromage râpé", qty: "20g" },
+                    { name: "Épinards", qty: "20g" }
+                ]},
+                { name: "Bowl Açaï", kcal: 340, prot: 20, carbs: 55, fat: 8, ingredients: [
+                    { name: "Poudre d'açaï", qty: "20g" },
+                    { name: "Banane", qty: "1 (120g)" },
+                    { name: "Granola", qty: "30g" },
+                    { name: "Graines de chia", qty: "10g" },
+                    { name: "Lait de coco", qty: "100ml" }
+                ]},
+                { name: "Crêpes Salées Jambon", kcal: 400, prot: 28, carbs: 45, fat: 15, ingredients: [
+                    { name: "Farine T80", qty: "60g" },
+                    { name: "Oeuf entier", qty: "1 (50g)" },
+                    { name: "Lait écrémé", qty: "150ml" },
+                    { name: "Jambon blanc", qty: "60g" },
+                    { name: "Fromage râpé", qty: "30g" }
+                ]},
+                { name: "Shakshuka", kcal: 380, prot: 22, carbs: 30, fat: 20, ingredients: [
+                    { name: "Oeufs entiers", qty: "3 (150g)" },
+                    { name: "Tomates concassées", qty: "200g" },
+                    { name: "Poivron", qty: "1/2 (80g)" },
+                    { name: "Feta", qty: "30g" },
+                    { name: "Huile d'olive", qty: "10ml" }
+                ]},
+                { name: "Bagel Saumon", kcal: 450, prot: 30, carbs: 50, fat: 18, ingredients: [
+                    { name: "Bagel complet", qty: "1 (90g)" },
+                    { name: "Saumon fumé", qty: "80g" },
+                    { name: "Fromage frais 0%", qty: "30g" },
+                    { name: "Câpres", qty: "10g" },
+                    { name: "Oignon rouge", qty: "20g" }
+                ]},
+                { name: "Granola Maison", kcal: 360, prot: 15, carbs: 55, fat: 12, ingredients: [
+                    { name: "Flocons d'avoine", qty: "50g" },
+                    { name: "Miel", qty: "15g" },
+                    { name: "Noix mélangées", qty: "20g" },
+                    { name: "Fruits secs", qty: "20g" },
+                    { name: "Yaourt grec", qty: "150g" }
+                ]},
+                { name: "Smoothie Bowl Vert", kcal: 330, prot: 22, carbs: 50, fat: 6, ingredients: [
+                    { name: "Épinards frais", qty: "30g" },
+                    { name: "Banane", qty: "1 (120g)" },
+                    { name: "Pomme verte", qty: "1 (150g)" },
+                    { name: "Whey", qty: "20g" },
+                    { name: "Lait d'amande", qty: "150ml" }
+                ]},
+                { name: "Tartine Beurre Cacahuète", kcal: 380, prot: 18, carbs: 40, fat: 20, ingredients: [
+                    { name: "Pain complet", qty: "2 tranches (60g)" },
+                    { name: "Beurre cacahuète", qty: "20g (1 c.à.s)" },
+                    { name: "Banane", qty: "1 (120g)" },
+                    { name: "Graines de lin", qty: "10g" },
+                    { name: "Cannelle", qty: "qs" }
+                ]},
+                { name: "Oeufs Brouillés Crémeux", kcal: 420, prot: 28, carbs: 5, fat: 32, ingredients: [
+                    { name: "Oeufs entiers", qty: "3 (150g)" },
+                    { name: "Beurre", qty: "10g" },
+                    { name: "Crème fraîche légère", qty: "20ml" },
+                    { name: "Fromage râpé", qty: "20g" },
+                    { name: "Ciboulette", qty: "qs" }
+                ]},
+                { name: "Chia Pudding", kcal: 290, prot: 18, carbs: 35, fat: 12, ingredients: [
+                    { name: "Graines de chia", qty: "30g (3 c.à.s)" },
+                    { name: "Lait de coco", qty: "200ml" },
+                    { name: "Miel", qty: "10g" },
+                    { name: "Fruits rouges", qty: "80g" },
+                    { name: "Vanille", qty: "qs" }
+                ]},
+                { name: "Muesli Protéiné", kcal: 370, prot: 24, carbs: 48, fat: 10, ingredients: [
+                    { name: "Muesli sans sucre", qty: "60g" },
+                    { name: "Whey", qty: "20g" },
+                    { name: "Lait écrémé", qty: "200ml" },
+                    { name: "Pomme", qty: "1 (150g)" },
+                    { name: "Cannelle", qty: "qs" }
+                ]},
+                { name: "Sandwich Club", kcal: 480, prot: 35, carbs: 45, fat: 22, ingredients: [
+                    { name: "Pain de mie complet", qty: "3 tranches (90g)" },
+                    { name: "Blanc de poulet", qty: "80g" },
+                    { name: "Bacon maigre", qty: "2 tranches (30g)" },
+                    { name: "Oeuf dur", qty: "1 (50g)" },
+                    { name: "Salade, tomate", qty: "qs" }
+                ]},
+                { name: "Quiche Sans Pâte", kcal: 340, prot: 28, carbs: 12, fat: 22, ingredients: [
+                    { name: "Oeufs entiers", qty: "2 (100g)" },
+                    { name: "Lait écrémé", qty: "100ml" },
+                    { name: "Jambon blanc", qty: "60g" },
+                    { name: "Fromage râpé", qty: "30g" },
+                    { name: "Légumes variés", qty: "100g" }
+                ]}
             ],
             "collation": [
-                { name: "Shake Protéiné", kcal: 200, prot: 25, carbs: 10, fat: 5, ingredients: ["Whey", "Eau", "Glace"] },
-                { name: "Yaourt Grec Noix", kcal: 250, prot: 20, carbs: 15, fat: 15, ingredients: ["Yaourt grec", "Noix", "Miel"] },
-                { name: "Pomme Beurre Cacahuète", kcal: 280, prot: 8, carbs: 35, fat: 16, ingredients: ["Pomme", "Beurre cacahuète"] },
-                { name: "Fromage Blanc Fruits", kcal: 220, prot: 18, carbs: 25, fat: 6, ingredients: ["Fromage blanc", "Fruits rouges", "Miel"] },
-                { name: "Barre Protéinée", kcal: 240, prot: 20, carbs: 25, fat: 10, ingredients: ["Flocons d'avoine", "Whey", "Miel", "Chocolat"] },
-                { name: "Oeufs Durs", kcal: 140, prot: 12, carbs: 1, fat: 10, ingredients: ["2 oeufs durs"] },
-                { name: "Houmous Légumes", kcal: 200, prot: 8, carbs: 20, fat: 12, ingredients: ["Houmous", "Carottes", "Concombre", "Poivrons"] },
-                { name: "Cottage Cheese", kcal: 180, prot: 24, carbs: 10, fat: 5, ingredients: ["Cottage cheese", "Ananas", "Cannelle"] },
-                { name: "Amandes", kcal: 160, prot: 6, carbs: 6, fat: 14, ingredients: ["30g d'amandes"] },
-                { name: "Edamames", kcal: 190, prot: 17, carbs: 14, fat: 8, ingredients: ["Edamames", "Sel"] },
-                { name: "Thon Crackers", kcal: 220, prot: 25, carbs: 20, fat: 8, ingredients: ["Thon", "Crackers complets", "Citron"] },
-                { name: "Smoothie Protéiné", kcal: 210, prot: 25, carbs: 18, fat: 4, ingredients: ["Lait", "Whey", "Glace"] }
+                { name: "Shake Protéiné Express", kcal: 200, prot: 25, carbs: 10, fat: 5, ingredients: [
+                    { name: "Whey isolate", qty: "30g (1 scoop)" },
+                    { name: "Eau", qty: "300ml" },
+                    { name: "Glace", qty: "3-4 cubes" }
+                ]},
+                { name: "Yaourt Grec Noix", kcal: 250, prot: 20, carbs: 15, fat: 15, ingredients: [
+                    { name: "Yaourt grec 0%", qty: "150g" },
+                    { name: "Noix de cajou", qty: "15g" },
+                    { name: "Miel", qty: "10g (1 c.à.c)" }
+                ]},
+                { name: "Pomme Beurre Cacahuète", kcal: 280, prot: 8, carbs: 35, fat: 16, ingredients: [
+                    { name: "Pomme", qty: "1 moyenne (180g)" },
+                    { name: "Beurre cacahuète", qty: "20g (1 c.à.s)" }
+                ]},
+                { name: "Fromage Blanc Fruits", kcal: 220, prot: 18, carbs: 25, fat: 6, ingredients: [
+                    { name: "Fromage blanc 0%", qty: "200g" },
+                    { name: "Fruits rouges", qty: "100g" },
+                    { name: "Miel", qty: "10g" }
+                ]},
+                { name: "Barre Protéinée Maison", kcal: 240, prot: 20, carbs: 25, fat: 10, ingredients: [
+                    { name: "Flocons d'avoine", qty: "40g" },
+                    { name: "Whey", qty: "20g" },
+                    { name: "Miel", qty: "15g" },
+                    { name: "Chocolat noir 70%", qty: "10g" }
+                ]},
+                { name: "Oeufs Durs", kcal: 140, prot: 12, carbs: 1, fat: 10, ingredients: [
+                    { name: "Oeufs entiers", qty: "2 (100g)" },
+                    { name: "Sel, poivre", qty: "qs" }
+                ]},
+                { name: "Houmous Légumes", kcal: 200, prot: 8, carbs: 20, fat: 12, ingredients: [
+                    { name: "Houmous", qty: "60g (4 c.à.s)" },
+                    { name: "Carottes", qty: "100g" },
+                    { name: "Concombre", qty: "100g" },
+                    { name: "Poivrons", qty: "80g" }
+                ]},
+                { name: "Cottage Cheese Ananas", kcal: 180, prot: 24, carbs: 10, fat: 5, ingredients: [
+                    { name: "Cottage cheese", qty: "200g" },
+                    { name: "Ananas frais", qty: "100g" },
+                    { name: "Cannelle", qty: "qs" }
+                ]},
+                { name: "Amandes", kcal: 160, prot: 6, carbs: 6, fat: 14, ingredients: [
+                    { name: "Amandes natures", qty: "30g (20 amandes)" }
+                ]},
+                { name: "Edamames", kcal: 190, prot: 17, carbs: 14, fat: 8, ingredients: [
+                    { name: "Edamames surgelés", qty: "150g" },
+                    { name: "Sel marin", qty: "qs" }
+                ]},
+                { name: "Thon Crackers", kcal: 220, prot: 25, carbs: 20, fat: 8, ingredients: [
+                    { name: "Thon au naturel", qty: "80g (1 boîte)" },
+                    { name: "Crackers complets", qty: "30g (6 crackers)" },
+                    { name: "Citron", qty: "1/2" }
+                ]},
+                { name: "Smoothie Protéiné", kcal: 210, prot: 25, carbs: 18, fat: 4, ingredients: [
+                    { name: "Lait écrémé", qty: "250ml" },
+                    { name: "Whey", qty: "25g" },
+                    { name: "Glace", qty: "3-4 cubes" }
+                ]}
             ],
             "dejeuner": [
-                { name: "Poulet Riz Brocolis", kcal: 550, prot: 45, carbs: 60, fat: 15, ingredients: ["Poulet", "Riz complet", "Brocolis", "Sauce soja"] },
-                { name: "Bowl Quinoa Saumon", kcal: 520, prot: 35, carbs: 55, fat: 22, ingredients: ["Quinoa", "Saumon", "Avocat", "Légumes"] },
-                { name: "Pâtes Poulet Pesto", kcal: 580, prot: 40, carbs: 70, fat: 20, ingredients: ["Pâtes complètes", "Poulet", "Pesto maison", "Tomates"] },
-                { name: "Salade César Poulet", kcal: 480, prot: 42, carbs: 20, fat: 28, ingredients: ["Salade", "Poulet", "Croutons", "Parmesan", "Sauce César"] },
-                { name: "Wrap Thon Avocat", kcal: 450, prot: 35, carbs: 45, fat: 20, ingredients: ["Tortilla", "Thon", "Avocat", "Salade", "Tomate"] },
-                { name: "Buddha Bowl", kcal: 510, prot: 25, carbs: 65, fat: 22, ingredients: ["Riz", "Pois chiches", "Avocat", "Légumes", "Tahini"] },
-                { name: "Steak Patate Douce", kcal: 600, prot: 45, carbs: 55, fat: 28, ingredients: ["Steak haché 5%", "Patate douce", "Haricots verts"] },
-                { name: "Lasagnes Légères", kcal: 520, prot: 38, carbs: 50, fat: 22, ingredients: ["Pâtes", "Bœuf maigre", "Béchamel légère", "Fromage"] },
-                { name: "Curry Poulet", kcal: 540, prot: 42, carbs: 45, fat: 25, ingredients: ["Poulet", "Lait de coco", "Curry", "Riz", "Légumes"] },
-                { name: "Salade Niçoise", kcal: 480, prot: 35, carbs: 25, fat: 30, ingredients: ["Thon", "Oeufs", "Haricots", "Olives", "Salade"] },
-                { name: "Fajitas Poulet", kcal: 520, prot: 40, carbs: 55, fat: 18, ingredients: ["Tortillas", "Poulet", "Poivrons", "Oignons", "Guacamole"] },
-                { name: "Risotto Champignons", kcal: 490, prot: 20, carbs: 70, fat: 18, ingredients: ["Riz", "Champignons", "Parmesan", "Bouillon"] },
-                { name: "Poulet Coco Curry", kcal: 560, prot: 45, carbs: 40, fat: 28, ingredients: ["Poulet", "Lait de coco", "Curry", "Quinoa"] },
-                { name: "Tartare de Saumon", kcal: 420, prot: 35, carbs: 15, fat: 28, ingredients: ["Saumon frais", "Avocat", "Citron", "Herbes"] },
-                { name: "Chili Con Carne", kcal: 550, prot: 40, carbs: 50, fat: 25, ingredients: ["Bœuf maigre", "Haricots rouges", "Tomates", "Riz"] },
-                { name: "Poulet Teriyaki", kcal: 530, prot: 45, carbs: 60, fat: 15, ingredients: ["Poulet", "Sauce teriyaki", "Riz", "Légumes"] },
-                { name: "Salade de Lentilles", kcal: 460, prot: 25, carbs: 55, fat: 18, ingredients: ["Lentilles", "Feta", "Légumes", "Vinaigrette"] },
-                { name: "Couscous Poulet", kcal: 580, prot: 40, carbs: 70, fat: 20, ingredients: ["Semoule", "Poulet", "Légumes", "Bouillon"] },
-                { name: "Wok de Crevettes", kcal: 450, prot: 35, carbs: 40, fat: 20, ingredients: ["Crevettes", "Nouilles", "Légumes", "Sauce soja"] },
-                { name: "Parmentier de Canard", kcal: 600, prot: 35, carbs: 55, fat: 30, ingredients: ["Canard", "Pommes de terre", "Fromage"] }
+                { name: "Poulet Riz Brocolis", kcal: 550, prot: 45, carbs: 60, fat: 15, ingredients: [
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Riz complet cuit", qty: "150g" },
+                    { name: "Brocolis", qty: "200g" },
+                    { name: "Sauce soja légère", qty: "15ml (1 c.à.s)" },
+                    { name: "Huile de sésame", qty: "5ml (1 c.à.c)" }
+                ]},
+                { name: "Bowl Quinoa Saumon", kcal: 520, prot: 35, carbs: 55, fat: 22, ingredients: [
+                    { name: "Quinoa cuit", qty: "150g" },
+                    { name: "Saumon frais", qty: "120g" },
+                    { name: "Avocat", qty: "1/2 (75g)" },
+                    { name: "Légumes variés", qty: "150g" },
+                    { name: "Sauce tahini", qty: "15ml" }
+                ]},
+                { name: "Pâtes Poulet Pesto", kcal: 580, prot: 40, carbs: 70, fat: 20, ingredients: [
+                    { name: "Pâtes complètes cuites", qty: "200g" },
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Pesto maison", qty: "30g (2 c.à.s)" },
+                    { name: "Tomates cerises", qty: "100g" },
+                    { name: "Parmesan", qty: "10g" }
+                ]},
+                { name: "Salade César Poulet", kcal: 480, prot: 42, carbs: 20, fat: 28, ingredients: [
+                    { name: "Salade romaine", qty: "150g" },
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Croutons", qty: "30g" },
+                    { name: "Parmesan", qty: "20g" },
+                    { name: "Sauce César légère", qty: "30ml (2 c.à.s)" }
+                ]},
+                { name: "Wrap Thon Avocat", kcal: 450, prot: 35, carbs: 45, fat: 20, ingredients: [
+                    { name: "Tortilla complète", qty: "1 (60g)" },
+                    { name: "Thon au naturel", qty: "120g (1 boîte)" },
+                    { name: "Avocat", qty: "1/2 (75g)" },
+                    { name: "Salade", qty: "30g" },
+                    { name: "Tomate", qty: "50g" }
+                ]},
+                { name: "Buddha Bowl", kcal: 510, prot: 25, carbs: 65, fat: 22, ingredients: [
+                    { name: "Riz complet cuit", qty: "150g" },
+                    { name: "Pois chiches cuits", qty: "150g" },
+                    { name: "Avocat", qty: "1/2 (75g)" },
+                    { name: "Légumes rôtis", qty: "150g" },
+                    { name: "Sauce tahini", qty: "20ml" }
+                ]},
+                { name: "Steak Patate Douce", kcal: 600, prot: 45, carbs: 55, fat: 28, ingredients: [
+                    { name: "Steak haché 5% MG", qty: "150g" },
+                    { name: "Patate douce cuite", qty: "200g" },
+                    { name: "Haricots verts", qty: "150g" },
+                    { name: "Huile d'olive", qty: "10ml (2 c.à.c)" }
+                ]},
+                { name: "Lasagnes Légères", kcal: 520, prot: 38, carbs: 50, fat: 22, ingredients: [
+                    { name: "Feuilles de lasagnes", qty: "60g (3 feuilles)" },
+                    { name: "Bœuf haché 5% MG", qty: "120g" },
+                    { name: "Béchamel légère", qty: "100ml" },
+                    { name: "Fromage râpé", qty: "30g" },
+                    { name: "Sauce tomate", qty: "100ml" }
+                ]},
+                { name: "Curry Poulet", kcal: 540, prot: 42, carbs: 45, fat: 25, ingredients: [
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Lait de coco light", qty: "150ml" },
+                    { name: "Pâte de curry", qty: "20g (1 c.à.s)" },
+                    { name: "Riz basmati cuit", qty: "150g" },
+                    { name: "Légumes", qty: "150g" }
+                ]},
+                { name: "Salade Niçoise", kcal: 480, prot: 35, carbs: 25, fat: 30, ingredients: [
+                    { name: "Thon au naturel", qty: "120g" },
+                    { name: "Oeuf dur", qty: "2 (100g)" },
+                    { name: "Haricots verts", qty: "100g" },
+                    { name: "Olives noires", qty: "20g" },
+                    { name: "Salade", qty: "100g" }
+                ]},
+                { name: "Fajitas Poulet", kcal: 520, prot: 40, carbs: 55, fat: 18, ingredients: [
+                    { name: "Tortillas complètes", qty: "2 (120g)" },
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Poivrons", qty: "150g" },
+                    { name: "Oignons", qty: "100g" },
+                    { name: "Guacamole", qty: "50g" }
+                ]},
+                { name: "Risotto Champignons", kcal: 490, prot: 20, carbs: 70, fat: 18, ingredients: [
+                    { name: "Riz arborio", qty: "80g (sec)" },
+                    { name: "Champignons", qty: "200g" },
+                    { name: "Parmesan", qty: "30g" },
+                    { name: "Bouillon de légumes", qty: "500ml" },
+                    { name: "Vin blanc", qty: "50ml" }
+                ]},
+                { name: "Poulet Coco Curry", kcal: 560, prot: 45, carbs: 40, fat: 28, ingredients: [
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Lait de coco", qty: "150ml" },
+                    { name: "Curry en poudre", qty: "15g (1 c.à.s)" },
+                    { name: "Quinoa cuit", qty: "150g" },
+                    { name: "Légumes", qty: "150g" }
+                ]},
+                { name: "Tartare de Saumon", kcal: 420, prot: 35, carbs: 15, fat: 28, ingredients: [
+                    { name: "Saumon frais", qty: "150g" },
+                    { name: "Avocat", qty: "1/2 (75g)" },
+                    { name: "Citron", qty: "1" },
+                    { name: "Câpres", qty: "10g" },
+                    { name: "Oignon rouge", qty: "30g" }
+                ]},
+                { name: "Chili Con Carne", kcal: 550, prot: 40, carbs: 50, fat: 25, ingredients: [
+                    { name: "Bœuf haché 5% MG", qty: "150g" },
+                    { name: "Haricots rouges", qty: "150g (1 boîte)" },
+                    { name: "Tomates concassées", qty: "200g" },
+                    { name: "Riz complet cuit", qty: "150g" },
+                    { name: "Épices chili", qty: "qs" }
+                ]},
+                { name: "Poulet Teriyaki", kcal: 530, prot: 45, carbs: 60, fat: 15, ingredients: [
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Sauce teriyaki", qty: "30ml (2 c.à.s)" },
+                    { name: "Riz complet cuit", qty: "200g" },
+                    { name: "Brocolis", qty: "150g" },
+                    { name: "Sésame", qty: "5g" }
+                ]},
+                { name: "Salade de Lentilles", kcal: 460, prot: 25, carbs: 55, fat: 18, ingredients: [
+                    { name: "Lentilles cuites", qty: "200g" },
+                    { name: "Feta", qty: "50g" },
+                    { name: "Légumes variés", qty: "150g" },
+                    { name: "Vinaigrette légère", qty: "15ml (1 c.à.s)" }
+                ]},
+                { name: "Couscous Poulet", kcal: 580, prot: 40, carbs: 70, fat: 20, ingredients: [
+                    { name: "Semoule complète cuite", qty: "200g" },
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Légumes (courgettes, carottes)", qty: "200g" },
+                    { name: "Bouillon", qty: "200ml" },
+                    { name: "Raisins secs", qty: "20g" }
+                ]},
+                { name: "Wok de Crevettes", kcal: 450, prot: 35, carbs: 40, fat: 20, ingredients: [
+                    { name: "Crevettes décortiquées", qty: "200g" },
+                    { name: "Nouilles de riz", qty: "150g cuites" },
+                    { name: "Légumes (poivrons, oignons)", qty: "200g" },
+                    { name: "Sauce soja", qty: "20ml (1 c.à.s)" },
+                    { name: "Huile de sésame", qty: "10ml (2 c.à.c)" }
+                ]},
+                { name: "Parmentier de Canard", kcal: 600, prot: 35, carbs: 55, fat: 30, ingredients: [
+                    { name: "Confit de canard (sans peau)", qty: "150g" },
+                    { name: "Pommes de terre", qty: "300g" },
+                    { name: "Fromage râpé", qty: "30g" },
+                    { name: "Lait", qty: "50ml" },
+                    { name: "Beurre", qty: "10g" }
+                ]}
             ],
             "diner": [
-                { name: "Saumon Asperges", kcal: 450, prot: 40, carbs: 15, fat: 28, ingredients: ["Saumon", "Asperges", "Citron", "Huile d'olive"] },
-                { name: "Poulet Légumes Rôtis", kcal: 420, prot: 45, carbs: 25, fat: 20, ingredients: ["Poulet", "Courgettes", "Poivrons", "Oignons"] },
-                { name: "Omelette Jambon", kcal: 380, prot: 30, carbs: 10, fat: 28, ingredients: ["Oeufs", "Jambon", "Fromage", "Champignons"] },
-                { name: "Dinde Haricots Verts", kcal: 350, prot: 45, carbs: 15, fat: 15, ingredients: ["Dinde", "Haricots verts", "Ail", "Herbes"] },
-                { name: "Cabillaud Purée", kcal: 400, prot: 35, carbs: 40, fat: 12, ingredients: ["Cabillaud", "Pommes de terre", "Lait", "Beurre"] },
-                { name: "Steak Salade", kcal: 480, prot: 45, carbs: 10, fat: 32, ingredients: ["Steak", "Salade verte", "Tomates", "Vinaigrette"] },
-                { name: "Soupe de Poulet", kcal: 320, prot: 30, carbs: 25, fat: 12, ingredients: ["Poulet", "Légumes", "Bouillon", "Nouilles"] },
-                { name: "Tartare de Bœuf", kcal: 420, prot: 35, carbs: 5, fat: 30, ingredients: ["Bœuf haché", "Oeuf", "Câpres", "Oignons"] },
-                { name: "Filet de Sole", kcal: 380, prot: 40, carbs: 20, fat: 18, ingredients: ["Sole", "Riz", "Citron", "Beurre"] },
-                { name: "Ratatouille Œuf", kcal: 340, prot: 18, carbs: 30, fat: 20, ingredients: ["Légumes", "Oeufs", "Tomates", "Herbes"] },
-                { name: "Crevettes Ail", kcal: 300, prot: 35, carbs: 15, fat: 15, ingredients: ["Crevettes", "Ail", "Persil", "Huile d'olive"] },
-                { name: "Poulet Curry Coco", kcal: 480, prot: 40, carbs: 20, fat: 30, ingredients: ["Poulet", "Lait de coco", "Curry", "Légumes"] },
-                { name: "Merlu Sauce Tomate", kcal: 360, prot: 40, carbs: 25, fat: 12, ingredients: ["Merlu", "Tomates", "Ail", "Herbes"] },
-                { name: "Wok de Tofu", kcal: 380, prot: 25, carbs: 35, fat: 20, ingredients: ["Tofu", "Légumes", "Nouilles", "Sauce soja"] },
-                { name: "Rôti de Porc", kcal: 520, prot: 45, carbs: 30, fat: 28, ingredients: ["Porc maigre", "Pommes de terre", "Légumes"] },
-                { name: "Soupe de Lentilles", kcal: 340, prot: 22, carbs: 45, fat: 8, ingredients: ["Lentilles", "Légumes", "Bouillon", "Épices"] },
-                { name: "Papillote de Poisson", kcal: 360, prot: 38, carbs: 15, fat: 20, ingredients: ["Poisson blanc", "Légumes", "Citron", "Herbes"] },
-                { name: "Chili Végétarien", kcal: 380, prot: 20, carbs: 55, fat: 12, ingredients: ["Haricots", "Lentilles", "Tomates", "Épices"] },
-                { name: "Blanquette de Veau", kcal: 480, prot: 40, carbs: 25, fat: 28, ingredients: ["Veau", "Champignons", "Carottes", "Crème légère"] },
-                { name: "Gratin de Courgettes", kcal: 340, prot: 22, carbs: 20, fat: 22, ingredients: ["Courgettes", "Fromage", "Oeufs", "Lait"] }
+                { name: "Saumon Asperges", kcal: 450, prot: 40, carbs: 15, fat: 28, ingredients: [
+                    { name: "Pavé de saumon", qty: "150g" },
+                    { name: "Asperges vertes", qty: "200g" },
+                    { name: "Citron", qty: "1/2" },
+                    { name: "Huile d'olive", qty: "10ml (2 c.à.c)" },
+                    { name: "Aneth frais", qty: "qs" }
+                ]},
+                { name: "Poulet Légumes Rôtis", kcal: 420, prot: 45, carbs: 25, fat: 20, ingredients: [
+                    { name: "Cuisse de poulet sans peau", qty: "150g" },
+                    { name: "Courgettes", qty: "150g" },
+                    { name: "Poivrons", qty: "100g" },
+                    { name: "Oignons", qty: "80g" },
+                    { name: "Herbes de Provence", qty: "qs" }
+                ]},
+                { name: "Omelette Jambon Fromage", kcal: 380, prot: 30, carbs: 10, fat: 28, ingredients: [
+                    { name: "Oeufs entiers", qty: "3 (150g)" },
+                    { name: "Jambon blanc", qty: "60g" },
+                    { name: "Fromage râpé", qty: "30g" },
+                    { name: "Champignons", qty: "100g" },
+                    { name: "Beurre", qty: "10g" }
+                ]},
+                { name: "Dinde Haricots Verts", kcal: 350, prot: 45, carbs: 15, fat: 15, ingredients: [
+                    { name: "Escalope de dinde", qty: "200g" },
+                    { name: "Haricots verts", qty: "200g" },
+                    { name: "Ail", qty: "2 gousses" },
+                    { name: "Herbes fraîches", qty: "qs" },
+                    { name: "Huile d'olive", qty: "10ml" }
+                ]},
+                { name: "Cabillaud Purée", kcal: 400, prot: 35, carbs: 40, fat: 12, ingredients: [
+                    { name: "Dos de cabillaud", qty: "180g" },
+                    { name: "Pommes de terre", qty: "250g" },
+                    { name: "Lait écrémé", qty: "50ml" },
+                    { name: "Beurre", qty: "10g" },
+                    { name: "Ciboulette", qty: "qs" }
+                ]},
+                { name: "Steak Salade", kcal: 480, prot: 45, carbs: 10, fat: 32, ingredients: [
+                    { name: "Steak haché 5% MG", qty: "200g" },
+                    { name: "Salade verte", qty: "150g" },
+                    { name: "Tomates cerises", qty: "100g" },
+                    { name: "Vinaigrette légère", qty: "15ml (1 c.à.s)" },
+                    { name: "Oignons rouges", qty: "30g" }
+                ]},
+                { name: "Soupe de Poulet", kcal: 320, prot: 30, carbs: 25, fat: 12, ingredients: [
+                    { name: "Blanc de poulet", qty: "150g" },
+                    { name: "Légumes variés", qty: "200g" },
+                    { name: "Bouillon de poulet", qty: "400ml" },
+                    { name: "Nouilles chinoises", qty: "50g" },
+                    { name: "Gingembre frais", qty: "10g" }
+                ]},
+                { name: "Tartare de Bœuf", kcal: 420, prot: 35, carbs: 5, fat: 30, ingredients: [
+                    { name: "Bœuf haché frais", qty: "200g" },
+                    { name: "Jaune d'oeuf", qty: "1" },
+                    { name: "Câpres", qty: "10g" },
+                    { name: "Oignons rouges", qty: "30g" },
+                    { name: "Cornichons", qty: "20g" }
+                ]},
+                { name: "Filet de Sole Meunière", kcal: 380, prot: 40, carbs: 20, fat: 18, ingredients: [
+                    { name: "Filet de sole", qty: "200g" },
+                    { name: "Riz complet cuit", qty: "100g" },
+                    { name: "Citron", qty: "1/2" },
+                    { name: "Beurre", qty: "15g" },
+                    { name: "Persil", qty: "qs" }
+                ]},
+                { name: "Ratatouille Oeuf", kcal: 340, prot: 18, carbs: 30, fat: 20, ingredients: [
+                    { name: "Légumes ratatouille", qty: "300g" },
+                    { name: "Oeufs entiers", qty: "2 (100g)" },
+                    { name: "Tomates concassées", qty: "100g" },
+                    { name: "Herbes de Provence", qty: "qs" },
+                    { name: "Huile d'olive", qty: "10ml" }
+                ]},
+                { name: "Crevettes Ail Persil", kcal: 300, prot: 35, carbs: 15, fat: 15, ingredients: [
+                    { name: "Crevettes décortiquées", qty: "250g" },
+                    { name: "Ail", qty: "3 gousses" },
+                    { name: "Persil frais", qty: "qs" },
+                    { name: "Huile d'olive", qty: "15ml (1 c.à.s)" },
+                    { name: "Citron", qty: "1/2" }
+                ]},
+                { name: "Poulet Curry Coco", kcal: 480, prot: 40, carbs: 20, fat: 30, ingredients: [
+                    { name: "Cuisse de poulet sans peau", qty: "200g" },
+                    { name: "Lait de coco light", qty: "150ml" },
+                    { name: "Curry en poudre", qty: "15g (1 c.à.s)" },
+                    { name: "Légumes variés", qty: "200g" },
+                    { name: "Coriandre fraîche", qty: "qs" }
+                ]},
+                { name: "Merlu Sauce Tomate", kcal: 360, prot: 40, carbs: 25, fat: 12, ingredients: [
+                    { name: "Filet de merlu", qty: "200g" },
+                    { name: "Tomates concassées", qty: "200g" },
+                    { name: "Ail", qty: "2 gousses" },
+                    { name: "Herbes italiennes", qty: "qs" },
+                    { name: "Huile d'olive", qty: "10ml" }
+                ]},
+                { name: "Wok de Tofu", kcal: 380, prot: 25, carbs: 35, fat: 20, ingredients: [
+                    { name: "Tofu ferme", qty: "200g" },
+                    { name: "Légumes variés", qty: "250g" },
+                    { name: "Nouilles de riz", qty: "100g cuites" },
+                    { name: "Sauce soja", qty: "20ml (1 c.à.s)" },
+                    { name: "Huile de sésame", qty: "10ml" }
+                ]},
+                { name: "Rôti de Porc", kcal: 520, prot: 45, carbs: 30, fat: 28, ingredients: [
+                    { name: "Filet mignon de porc", qty: "200g" },
+                    { name: "Pommes de terre", qty: "200g" },
+                    { name: "Légumes rôtis", qty: "150g" },
+                    { name: "Thym", qty: "qs" },
+                    { name: "Huile d'olive", qty: "10ml" }
+                ]},
+                { name: "Soupe de Lentilles", kcal: 340, prot: 22, carbs: 45, fat: 8, ingredients: [
+                    { name: "Lentilles vertes", qty: "150g cuites" },
+                    { name: "Légumes (carottes, céleri)", qty: "200g" },
+                    { name: "Bouillon de légumes", qty: "400ml" },
+                    { name: "Cumin", qty: "qs" },
+                    { name: "Coriandre", qty: "qs" }
+                ]},
+                { name: "Papillote de Poisson", kcal: 360, prot: 38, carbs: 15, fat: 20, ingredients: [
+                    { name: "Filet de poisson blanc", qty: "200g" },
+                    { name: "Légumes (courgettes, tomates)", qty: "200g" },
+                    { name: "Citron", qty: "1/2" },
+                    { name: "Herbes fraîches", qty: "qs" },
+                    { name: "Huile d'olive", qty: "10ml" }
+                ]},
+                { name: "Chili Végétarien", kcal: 380, prot: 20, carbs: 55, fat: 12, ingredients: [
+                    { name: "Haricots rouges", qty: "150g" },
+                    { name: "Lentilles", qty: "100g cuites" },
+                    { name: "Tomates concassées", qty: "200g" },
+                    { name: "Maïs", qty: "80g" },
+                    { name: "Épices chili", qty: "qs" }
+                ]},
+                { name: "Blanquette de Veau", kcal: 480, prot: 40, carbs: 25, fat: 28, ingredients: [
+                    { name: "Veau pour blanquette", qty: "200g" },
+                    { name: "Champignons de Paris", qty: "150g" },
+                    { name: "Carottes", qty: "100g" },
+                    { name: "Crème fraîche légère", qty: "50ml" },
+                    { name: "Citron", qty: "1/2" }
+                ]},
+                { name: "Gratin de Courgettes", kcal: 340, prot: 22, carbs: 20, fat: 22, ingredients: [
+                    { name: "Courgettes", qty: "400g" },
+                    { name: "Fromage râpé", qty: "50g" },
+                    { name: "Oeufs entiers", qty: "2 (100g)" },
+                    { name: "Lait écrémé", qty: "100ml" },
+                    { name: "Muscade", qty: "qs" }
+                ]}
             ]
         };
 
@@ -551,7 +955,7 @@
             container.classList.remove('hidden');
         }
 
-        // Générer repas aléatoire
+        // Générer repas aléatoire avec grammages
         function generateRandomMealPlan() {
             const objectif = document.getElementById('objectifRepas').value;
             const container = document.getElementById('randomMealResult');
@@ -564,24 +968,33 @@
             const totalKcal = petitDej.kcal + collation.kcal + dejeuner.kcal + diner.kcal;
             const totalProt = petitDej.prot + collation.prot + dejeuner.prot + diner.prot;
             
+            // Formater les ingrédients avec grammages
+            const formatIngredients = (ingredients) => {
+                return ingredients.map(ing => `<span class="block text-xs text-gray-400">• ${ing.name}: <span class="text-white">${ing.qty}</span></span>`).join('');
+            };
+            
             let html = `
                 <h4 class="font-bebas text-2xl mb-4 text-green-500">PLAN DE REPAS JOURNÉE</h4>
-                <div class="space-y-3 mb-4">
-                    <div class="bg-gray-700 p-3 rounded">
-                        <div class="flex justify-between"><span class="text-yellow-400 font-bold">PETIT-DÉJ</span><span>${petitDej.kcal} kcal</span></div>
-                        <div class="text-sm">${petitDej.name}</div>
+                <div class="space-y-4 mb-4">
+                    <div class="bg-gray-700 p-4 rounded">
+                        <div class="flex justify-between mb-2"><span class="text-yellow-400 font-bold">PETIT-DÉJ</span><span>${petitDej.kcal} kcal</span></div>
+                        <div class="font-bold text-white mb-1">${petitDej.name}</div>
+                        <div class="ingredient-list">${formatIngredients(petitDej.ingredients)}</div>
                     </div>
-                    <div class="bg-gray-700 p-3 rounded">
-                        <div class="flex justify-between"><span class="text-orange-400 font-bold">COLLATION</span><span>${collation.kcal} kcal</span></div>
-                        <div class="text-sm">${collation.name}</div>
+                    <div class="bg-gray-700 p-4 rounded">
+                        <div class="flex justify-between mb-2"><span class="text-orange-400 font-bold">COLLATION</span><span>${collation.kcal} kcal</span></div>
+                        <div class="font-bold text-white mb-1">${collation.name}</div>
+                        <div class="ingredient-list">${formatIngredients(collation.ingredients)}</div>
                     </div>
-                    <div class="bg-gray-700 p-3 rounded">
-                        <div class="flex justify-between"><span class="text-red-400 font-bold">DÉJEUNER</span><span>${dejeuner.kcal} kcal</span></div>
-                        <div class="text-sm">${dejeuner.name}</div>
+                    <div class="bg-gray-700 p-4 rounded">
+                        <div class="flex justify-between mb-2"><span class="text-red-400 font-bold">DÉJEUNER</span><span>${dejeuner.kcal} kcal</span></div>
+                        <div class="font-bold text-white mb-1">${dejeuner.name}</div>
+                        <div class="ingredient-list">${formatIngredients(dejeuner.ingredients)}</div>
                     </div>
-                    <div class="bg-gray-700 p-3 rounded">
-                        <div class="flex justify-between"><span class="text-blue-400 font-bold">DÎNER</span><span>${diner.kcal} kcal</span></div>
-                        <div class="text-sm">${diner.name}</div>
+                    <div class="bg-gray-700 p-4 rounded">
+                        <div class="flex justify-between mb-2"><span class="text-blue-400 font-bold">DÎNER</span><span>${diner.kcal} kcal</span></div>
+                        <div class="font-bold text-white mb-1">${diner.name}</div>
+                        <div class="ingredient-list">${formatIngredients(diner.ingredients)}</div>
                     </div>
                 </div>
                 <div class="bg-green-900/30 p-3 rounded text-center border border-green-600">
@@ -630,7 +1043,7 @@
             container.innerHTML = html;
         }
 
-        // Afficher recettes
+        // Afficher recettes avec grammages
         function renderRecipes(filter = 'all') {
             const container = document.getElementById('recipesContainer');
             let html = '';
@@ -638,6 +1051,10 @@
             Object.keys(recipesDB).forEach(cat => {
                 if (filter === 'all' || filter === cat) {
                     recipesDB[cat].forEach(recipe => {
+                        const ingredientsList = recipe.ingredients.slice(0, 3).map(ing => 
+                            `<span class="block truncate">${ing.name}: ${ing.qty}</span>`
+                        ).join('');
+                        
                         html += `
                             <div class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 recipe-card" data-cat="${cat}">
                                 <div class="p-4">
@@ -659,8 +1076,9 @@
                                             <div class="text-gray-500">Lip</div>
                                         </div>
                                     </div>
-                                    <div class="text-xs text-gray-400">
-                                        ${recipe.ingredients.slice(0, 3).join(', ')}...
+                                    <div class="ingredient-list text-xs text-gray-400">
+                                        ${ingredientsList}
+                                        ${recipe.ingredients.length > 3 ? `<span class="text-gray-500">+${recipe.ingredients.length - 3} autres...</span>` : ''}
                                     </div>
                                 </div>
                             </div>
@@ -681,130 +1099,384 @@
             renderRecipes(cat);
         }
 
-        // Téléchargement PDF
+        // Téléchargement PDF stylisé
         function downloadPDF(type) {
             if (type === 'nutrition') {
-                // Créer un PDF de nutrition
                 const content = `
-PROGRAMME ALIMENTAIRE IRON FIT - 5 JOURS
+╔════════════════════════════════════════════════════════════════╗
+║           PROGRAMME ALIMENTAIRE IRON FIT - 5 JOURS            ║
+║                      100% GRATUIT - BY KAL                     ║
+╚════════════════════════════════════════════════════════════════╝
 
-LUNDI:
-Petit-déj: Omelette 3 oeufs + 1/2 avocat (450 kcal)
-Collation: Shake protéiné (200 kcal)
-Déjeuner: Poulet riz brocolis (550 kcal)
-Dîner: Saumon asperges (450 kcal)
-TOTAL: 1650 kcal | 140g protéines
+LUNDI - 1650 kcal | 140g protéines
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌅 PETIT-DÉJ: Omelette 3 Oeufs Avocat (450 kcal)
+   • Oeufs entiers: 3 (150g)
+   • Avocat: 1/2 (75g)
+   • Épinards frais: 30g
+   • Huile d'olive: 5ml
 
-MARDI:
-Petit-déj: Smoothie protéiné banane (320 kcal)
-Collation: Yaourt grec noix (250 kcal)
-Déjeuner: Bowl quinoa saumon (520 kcal)
-Dîner: Poulet légumes rôtis (420 kcal)
-TOTAL: 1510 kcal | 125g protéines
+🍎 COLLATION: Shake Protéiné (200 kcal)
+   • Whey protéine: 30g (1 scoop)
+   • Banane: 1 moyenne (120g)
+   • Flocons d'avoine: 40g
+   • Lait écrémé: 250ml
 
-MERCREDI:
-Petit-déj: Porridge protéiné fruits (380 kcal)
-Collation: Pomme beurre cacahuète (280 kcal)
-Déjeuner: Pâtes poulet pesto (580 kcal)
-Dîner: Omelette jambon fromage (380 kcal)
-TOTAL: 1620 kcal | 130g protéines
+🌞 DÉJEUNER: Poulet Riz Brocolis (550 kcal)
+   • Blanc de poulet: 150g
+   • Riz complet cuit: 150g
+   • Brocolis: 200g
+   • Sauce soja légère: 15ml
 
-JEUDI:
-Petit-déj: Toast saumon avocat (420 kcal)
-Collation: Fromage blanc fruits (220 kcal)
-Déjeuner: Salade César poulet (480 kcal)
-Dîner: Dinde haricots verts (350 kcal)
-TOTAL: 1470 kcal | 135g protéines
+🌙 DÎNER: Saumon Asperges (450 kcal)
+   • Pavé de saumon: 150g
+   • Asperges vertes: 200g
+   • Citron: 1/2
+   • Huile d'olive: 10ml
 
-VENDREDI:
-Petit-déj: Pancakes protéinés (350 kcal)
-Collation: Barre protéinée maison (240 kcal)
-Déjeuner: Wrap thon avocat (450 kcal)
-Dîner: Cabillaud purée (400 kcal)
-TOTAL: 1440 kcal | 120g protéines
+MARDI - 1510 kcal | 125g protéines
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌅 PETIT-DÉJ: Smoothie Protéiné Banane (320 kcal)
+   • Whey vanille: 30g
+   • Banane: 1 (120g)
+   • Flocons d'avoine: 40g
+   • Lait: 250ml
 
-SHOPPING LIST:
-- Oeufs (30)
-- Poulet (1kg)
-- Saumon (500g)
-- Riz complet (1kg)
-- Quinoa (500g)
-- Légumes variés
-- Whey protéine
-- Fruits
-- Avocats (5)
-- Yaourt grec
+🍎 COLLATION: Yaourt Grec Noix (250 kcal)
+   • Yaourt grec 0%: 150g
+   • Noix de cajou: 15g
+   • Miel: 10g
+
+🌞 DÉJEUNER: Bowl Quinoa Saumon (520 kcal)
+   • Quinoa cuit: 150g
+   • Saumon frais: 120g
+   • Avocat: 1/2 (75g)
+   • Légumes: 150g
+
+🌙 DÎNER: Poulet Légumes Rôtis (420 kcal)
+   • Cuisse de poulet sans peau: 150g
+   • Courgettes: 150g
+   • Poivrons: 100g
+   • Oignons: 80g
+
+MERCREDI - 1620 kcal | 130g protéines
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌅 PETIT-DÉJ: Porridge Protéiné Fruits (380 kcal)
+   • Flocons d'avoine: 60g
+   • Whey vanille: 20g
+   • Fruits rouges: 80g
+   • Amandes: 10g
+   • Lait d'amande: 200ml
+
+🍎 COLLATION: Pomme Beurre Cacahuète (280 kcal)
+   • Pomme: 1 moyenne (180g)
+   • Beurre cacahuète: 20g
+
+🌞 DÉJEUNER: Pâtes Poulet Pesto (580 kcal)
+   • Pâtes complètes cuites: 200g
+   • Blanc de poulet: 150g
+   • Pesto maison: 30g
+   • Tomates cerises: 100g
+
+🌙 DÎNER: Omelette Jambon Fromage (380 kcal)
+   • Oeufs entiers: 3 (150g)
+   • Jambon blanc: 60g
+   • Fromage râpé: 30g
+   • Champignons: 100g
+
+JEUDI - 1470 kcal | 135g protéines
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌅 PETIT-DÉJ: Toast Saumon Avocat (420 kcal)
+   • Pain complet: 2 tranches (60g)
+   • Saumon fumé: 60g
+   • Avocat: 1/2 (75g)
+   • Oeuf poché: 1 (50g)
+
+🍎 COLLATION: Fromage Blanc Fruits (220 kcal)
+   • Fromage blanc 0%: 200g
+   • Fruits rouges: 100g
+   • Miel: 10g
+
+🌞 DÉJEUNER: Salade César Poulet (480 kcal)
+   • Salade romaine: 150g
+   • Blanc de poulet: 150g
+   • Croutons: 30g
+   • Parmesan: 20g
+   • Sauce César légère: 30ml
+
+🌙 DÎNER: Dinde Haricots Verts (350 kcal)
+   • Escalope de dinde: 200g
+   • Haricots verts: 200g
+   • Ail: 2 gousses
+   • Huile d'olive: 10ml
+
+VENDREDI - 1440 kcal | 120g protéines
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌅 PETIT-DÉJ: Pancakes Protéinés (350 kcal)
+   • Farine d'avoine: 50g
+   • Whey: 20g
+   • Blancs d'oeufs: 2 (70g)
+   • Banane mûre: 1 (100g)
+
+🍎 COLLATION: Barre Protéinée Maison (240 kcal)
+   • Flocons d'avoine: 40g
+   • Whey: 20g
+   • Miel: 15g
+   • Chocolat noir 70%: 10g
+
+🌞 DÉJEUNER: Wrap Thon Avocat (450 kcal)
+   • Tortilla complète: 1 (60g)
+   • Thon au naturel: 120g
+   • Avocat: 1/2 (75g)
+   • Salade: 30g
+   • Tomate: 50g
+
+🌙 DÎNER: Cabillaud Purée (400 kcal)
+   • Dos de cabillaud: 180g
+   • Pommes de terre: 250g
+   • Lait écrémé: 50ml
+   • Beurre: 10g
+
+╔════════════════════════════════════════════════════════════════╗
+║                      SHOPPING LIST                             ║
+╚════════════════════════════════════════════════════════════════╝
+
+PROTEINES:
+□ Oeufs entiers: 30
+□ Blanc de poulet: 1.2kg
+□ Saumon frais/fumé: 800g
+□ Thon au naturel: 2 boîtes
+□ Dinde: 400g
+□ Cabillaud: 200g
+
+GLUCIDES:
+□ Riz complet: 1kg
+□ Quinoa: 500g
+□ Pâtes complètes: 500g
+□ Flocons d'avoine: 500g
+□ Pain complet: 1 pain
+□ Tortillas complètes: 1 paquet
+□ Pommes de terre: 2kg
+□ Patates douces: 500g
+
+LEGUMES & FRUITS:
+□ Brocolis: 1kg
+□ Épinards: 500g
+□ Haricots verts: 1kg
+□ Courgettes: 1.5kg
+□ Poivrons: 1kg
+□ Tomates: 1kg
+□ Oignons: 500g
+□ Ail: 1 tête
+□ Bananes: 10
+□ Pommes: 5
+│ Avocats: 10
+□ Fruits rouges: 1kg (surgelés)
+
+AUTRES:
+□ Whey protéine: 1 pot
+□ Lait écrémé: 3L
+□ Lait d'amande: 1L
+□ Yaourt grec 0%: 1kg
+□ Fromage blanc 0%: 500g
+□ Fromage râpé: 200g
+□ Beurre: 100g
+□ Huile d'olive: 1 bouteille
+□ Huile de sésame: 1 bouteille
+□ Miel: 1 pot
+□ Beurre de cacahuète: 1 pot
+□ Sauce soja légère: 1 bouteille
+□ Amandes: 200g
+□ Noix de cajou: 100g
+
+CONSEILS IRON FIT:
+• Préparez vos repas à l'avance (meal prep dimanche)
+• Buvez 3L d'eau minimum par jour
+• Dormez 7-8h par nuit pour la récupération
+• Respectez les temps de repos entre les séries
+• Augmentez les charges progressivement
+
+═══════════════════════════════════════════════════════════════════
+© 2026 Iron Fit By Kal - NO PAIN NO GAIN
+═══════════════════════════════════════════════════════════════════
                 `;
                 
-                const blob = new Blob([content], { type: 'text/plain' });
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'Programme_Nutrition_IronFit.txt';
+                a.download = 'Programme_Nutrition_IronFit_By_Kal.txt';
                 a.click();
                 
             } else {
-                // PDF Workout
                 const content = `
-PROGRAMME MUSCULATION IRON FIT - 5 JOURS (PPL)
+╔════════════════════════════════════════════════════════════════╗
+║        PROGRAMME MUSCULATION IRON FIT - 5 JOURS (PPL)         ║
+║                      100% GRATUIT - BY KAL                     ║
+╚════════════════════════════════════════════════════════════════╝
 
 LUNDI - PUSH (Pectoraux/Épaules/Triceps)
-1. Développé couché: 4x8-12
-2. Développé incliné: 4x10-12
-3. Écartés haltères: 3x12-15
-4. Développé militaire: 4x8-10
-5. Élévations latérales: 4x12-15
-6. Extensions triceps: 3x12-15
-7. Dips: 3x10-15
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔥 ÉCHAUFFEMENT: 5-10 min vélo ou corde à sauter
+
+1. DÉVELOPPÉ COUCHÉ: 4 séries x 8-12 reps
+   Récup: 90s | Charge: 70-80% 1RM
+
+2. DÉVELOPPÉ INCLINÉ: 4 séries x 10-12 reps
+   Récup: 90s | Angle: 30-45°
+
+3. ÉCARTÉS HALTÈRES: 3 séries x 12-15 reps
+   Récup: 60s | Amplitude complète
+
+4. DÉVELOPPÉ MILITAIRE: 4 séries x 8-10 reps
+   Récup: 90s | Debout ou assis
+
+5. ÉLÉVATIONS LATÉRALES: 4 séries x 12-15 reps
+   Récup: 60s | Coudes légèrement fléchis
+
+6. EXTENSIONS TRICEPS: 3 séries x 12-15 reps
+   Récup: 60s | Corde ou barre
+
+7. DIPS: 3 séries x 10-15 reps
+   Récup: 90s | Torse penché pour pectoraux
 
 MARDI - PULL (Dos/Biceps)
-1. Tractions: 4x6-10
-2. Rowing barre: 4x8-12
-3. Rowing haltère: 3x10-12
-4. Lat pulldown: 4x10-12
-5. Curl haltères: 4x10-12
-6. Curl marteau: 3x12-15
-7. Face pull: 3x15-20
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔥 ÉCHAUFFEMENT: 5-10 min rameur
 
-MERCREDI - LEGS (Jambes/Abdos)
-1. Squat: 4x8-12
-2. Leg press: 4x12-15
-3. Fentes: 3x12/jambe
-4. Leg extension: 3x15-20
-5. Leg curl: 3x12-15
-6. Mollets debout: 4x15-20
-7. Planche: 3x60s
+1. TRACTIONS: 4 séries x 6-10 reps
+   Récup: 2min | Prise pronation, largeur épaules
+
+2. ROWING BARRE: 4 séries x 8-12 reps
+   Récup: 90s | Prise pronation
+
+3. ROWING HALTÈRE: 3 séries x 10-12 reps/side
+   Récup: 60s | Sur banc, unilatéral
+
+4. LAT PULLDOWN: 4 séries x 10-12 reps
+   Récup: 90s | Prise large
+
+5. CURL HALTÈRES: 4 séries x 10-12 reps
+   Récup: 60s | Supination
+
+6. CURL MARTEAU: 3 séries x 12-15 reps
+   Récup: 60s | Prise neutre
+
+7. FACE PULL: 3 séries x 15-20 reps
+   Récup: 45s | Corde, hauteur visage
+
+MERCREDI - LEGS (Jambes/Abdominaux)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔥 ÉCHAUFFEMENT: 5-10 min vélo + mobilité hanches
+
+1. SQUAT: 4 séries x 8-12 reps
+   Récup: 2min | Profondeur parallèle minimum
+
+2. LEG PRESS: 4 séries x 12-15 reps
+   Récup: 90s | Ne pas verrouiller genoux
+
+3. FENTES: 3 séries x 12 reps/jambe
+   Récup: 60s | Fente avant ou walking
+
+4. LEG EXTENSION: 3 séries x 15-20 reps
+   Récup: 60s | Contraction 2s en haut
+
+5. LEG CURL: 3 séries x 12-15 reps
+   Récup: 60s | Assis ou allongé
+
+6. MOLLETS DEBOUT: 4 séries x 15-20 reps
+   Récup: 45s | Étirement maximum
+
+7. PLANCHE: 3 séries x 45-60s
+   Récup: 60s | Gainage actif
 
 JEUDI - PUSH (Variation)
-1. Développé machine: 4x12-15
-2. Pec deck: 3x15-20
-3. Développé Arnold: 3x10-12
-4. Élévations frontales: 3x12-15
-5. Oiseau: 3x15-20
-6. Kickback triceps: 3x15-20
-7. Curl concentré: 3x12-15
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔥 ÉCHAUFFEMENT: 5-10 min vélo
+
+1. DÉVELOPPÉ MACHINE: 4 séries x 12-15 reps
+   Récup: 90s | Contrôle excentrique
+
+2. PEC DECK: 3 séries x 15-20 reps
+   Récup: 60s | Contraction maximale
+
+3. DÉVELOPPÉ ARNOLD: 3 séries x 10-12 reps
+   Récup: 90s | Rotation des poignets
+
+4. ÉLÉVATIONS FRONTALES: 3 séries x 12-15 reps
+   Récup: 60s | Haltère ou barre
+
+5. OISEAU: 3 séries x 15-20 reps
+   Récup: 45s | Légères haltères
+
+6. KICKBACK TRICEPS: 3 séries x 15-20 reps
+   Récup: 45s | Coude fixe
+
+7. CURL CONCENTRATION: 3 séries x 12-15 reps
+   Récup: 60s | Unilatéral, coude sur cuisse
 
 VENDREDI - PULL + ABDOS
-1. Rowing machine: 4x12-15
-2. Pull over: 3x12-15
-3. Shrugs: 4x12-15
-4. Curl barre: 3x10-12
-5. Curl prise marteau: 3x12-15
-6. Crunch: 4x20
-7. Leg raise: 3x15
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔥 ÉCHAUFFEMENT: 5-10 min rameur
 
-CONSEILS:
-- Échauffement: 5-10 min cardio léger
-- Récupération: 60-90s entre séries
-- Hydratation: 3L d'eau minimum/jour
-- Dodo: 7-8h de sommeil
+1. ROWING MACHINE: 4 séries x 12-15 reps
+   Récup: 90s | Prise neutre ou large
+
+2. PULL OVER: 3 séries x 12-15 reps
+   Récup: 60s | Haltère ou barre
+
+3. SHRUGS: 4 séries x 12-15 reps
+   Récup: 60s | Haltères ou barre
+
+4. CURL BARRE: 3 séries x 10-12 reps
+   Récup: 60s | Barre droite ou EZ
+
+5. CURL PRISE MARTEAU: 3 séries x 12-15 reps
+   Récup: 60s | Alterné ou simultané
+
+6. CRUNCH: 4 séries x 20 reps
+   Récup: 45s | Ne pas tirer sur la nuque
+
+7. LEG RAISE: 3 séries x 15 reps
+   Récup: 60s | Suspendu ou au sol
+
+╔════════════════════════════════════════════════════════════════╗
+║                    CONSEILS IRON FIT                           ║
+╚════════════════════════════════════════════════════════════════╝
+
+PROGRESSION:
+• Augmentez les charges de 2.5-5% quand vous atteignez
+  le maximum des reps sur 2 séances consécutives
+• Gardez un journal d'entraînement
+• Prenez des photos toutes les 4 semaines
+
+TECHNIQUE:
+• Maîtrisez le mouvement avant d'augmenter la charge
+• Contrôlez la phase excentrique (2-3 secondes)
+• Ne bloquez jamais les articulations
+• Respirez: expirez à l'effort
+
+RÉCUPÉRATION:
+• 48h de repos entre deux sessions même groupe
+• Dormez 7-8h par nuit
+• Hydratation: 3L d'eau minimum
+• Étirements légers après l'entraînement
+
+NUTRITION:
+• Mangez dans les 30-60min post-workout
+• Privilégiez les protéines et glucides
+• Exemple: Shake whey + banane
+
+═══════════════════════════════════════════════════════════════════
+© 2026 Iron Fit By Kal - NO PAIN NO GAIN
+═══════════════════════════════════════════════════════════════════
                 `;
                 
-                const blob = new Blob([content], { type: 'text/plain' });
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'Programme_Musculation_IronFit.txt';
+                a.download = 'Programme_Musculation_IronFit_By_Kal.txt';
                 a.click();
             }
         }
